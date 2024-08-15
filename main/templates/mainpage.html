@@ -1,10 +1,85 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <title>장고의 세계에 오신 것을 환영합니다!</title>
+    <meta charset="UTF-8">
+    <title>전라남도교육청 : 학교민주주의 지수</title>
+    <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/styles.css?v=2' %}">
 </head>
-<body>
-  이제 페이지를 하나씩 채워보도록 합시다.
+
+<body class="main">
+<div id="wrap">
+
+<header id="header">
+    <section class="header">
+        <a class="sta" href="#"><img src="/static/main/images/logo.png" alt="전라남도 교육청 로고" /></a>
+        <nav class="jn">
+            <ul>
+                <li class=""><a href="/About1/Index">학교민주주의 정책 이해</a></li>
+                <li class=""><a href="/About2/Index">학교민주주의 지수 안내</a></li>
+                <li class=""><a href="/Notice/Index">공지사항</a></li>
+                <li class=""><a href="/File/Index">자료실</a></li>
+                <li class=""><a href="/Admin/Index">학교관리자</a></li>
+            </ul>
+        </nav>
+        <img src="/static/main/images/sta04.png" alt="전남교육 아이좋아 로고" class="sta04">
+    </section>
+</header>
+
+
+<div id="container">
+
+    <section class="mainphotoView">
+        <section class="mainphoto">
+            <div class="main_ph">
+                <h1>학교민주주의 지수</h1>
+                <h2>School Democracy Index</h2>
+                <h3 style="line-height: 1.6em;">학교민주주의로 자율·존중·연대의 시민적 가치를 <br />함께 실천하고 성장하는 미래교육을 열어갑니다.</h3>
+            </div>
+            <div class="main_v"><img src="/static/main/images/main_v.png?ver=1" alt="" /></div>
+        </section>
+    </section>
+
+
+    <section class="maincontent">
+        <ul class="main_class">
+            <li class="m1">
+                <!-- /////////////////////////////// 학생 /////////////////////////////// -->
+                    <a href="#" onclick="window.location.href='/student-survey.html'; return false;">
+                        <p>학생</p>
+                        <p>우리학교 학교민주주의 지수<br />설문조사 시작하기</p>
+                    </a>
+                <!-- /////////////////////////////// 학생 /////////////////////////////// -->
+            </li>
+            <li class="m2">
+                <!-- /////////////////////////////// 학부모 /////////////////////////////// -->
+                    <a href="#" onclick="window.location.href='/parent-survey.html'; return false;">
+                        <p>학부모</p>
+                        <p>우리학교 학교민주주의 지수<br />설문조사 시작하기</p>
+                    </a>
+                <!-- /////////////////////////////// 학부모 /////////////////////////////// -->
+            </li>
+            <li class="m3">
+                <!-- /////////////////////////////// 교원 /////////////////////////////// -->
+                    <a href="#" onclick="window.location.href='/teacher-survey.html'; return false;">
+                        <p>교원</p>
+                        <p>우리학교 학교민주주의 지수<br />설문조사 시작하기</p>
+                    </a>
+                <!-- /////////////////////////////// 교원 /////////////////////////////// -->
+            </li>
+        </ul>
+    </section>
+
+
+    <footer id="footer">
+        <section class="footer">
+            <a class="sta"><img src="/static/main/images/logo.png" alt="전라남도 교육청" /></a>
+            <p class="copy">
+                (58564) 전라남도 무안군 삼향읍 어진누리길 10
+            </p>
+        </section>
+    </footer>
 </body>
 </html>
