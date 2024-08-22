@@ -14,3 +14,9 @@ def about1(request):
 
 def about2(request):
     return render(request, 'about2.html')
+
+def file(request):
+    return render(request, 'file.html')
+
+def admin(request):
+    return render(request, 'admin.html')
