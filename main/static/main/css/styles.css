@@ -167,32 +167,3 @@ body {
     margin-bottom: 200px; /* 제목과 설명 사이 간격 설정 */
 }
 
-/*-------------------------------------------------------------------------*/
-
-.footer {
-    display: flex;
-    align-items: center;  /* 세로 중앙 정렬 */
-    justify-content: center;  /* 가로 중앙 정렬 */
-    padding: 20px 50px;  /* 좌우 패딩 설정 */
-    width: 100%;  /* footer가 전체 너비를 차지하도록 설정 */
-    box-sizing: border-box;  /* padding과 width를 함께 고려 */
-}
-
-.footer .sta {
-    margin-right: 30px;  /* 이미지와 텍스트 사이 간격 */
-    display: flex;
-    align-items: center;
-}
-
-.footer img {
-    max-width: 150px;  /* 이미지 크기 조절 */
-    height: auto;
-    margin-right: 15px; /* 텍스트와 이미지 사이 간격 조정 */
-}
-
-.footer .copy {
-    font-size: 14px;  /* 글씨 크기 조정 */
-    line-height: 1.5;  /* 줄 간격 조정 */
-    color: #333;  /* 텍스트 색상 */
-    text-align: left;  /* 텍스트 왼쪽 정렬 */
-}

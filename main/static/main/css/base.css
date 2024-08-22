@@ -1,0 +1,87 @@
+/* 기본 스타일 설정 */
+body {
+    font-family: 'Nanum Gothic', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+/*///////////////////////////////////////////*/
+#header {
+    background-color: #fff; /* 배경색 설정 */
+    padding: 10px 20px; /* 헤더에 패딩 적용 */
+    border-bottom: 1px solid #ccc; /* 하단 경계선 */
+}
+
+.header {
+    display: flex; /* Flexbox를 사용하여 아이템 배치 */
+    justify-content: center; /* 아이템들을 좌우로 배치 */
+    align-items: center; /* 세로 가운데 정렬 */
+}
+
+.header .sta {
+    display: flex; /* 로고와 텍스트를 나란히 배치 */
+    align-items: center;
+    margin-right: 50px; /* 왼쪽 로고와 메뉴 사이 간격 */
+}
+
+.header .sta img {
+    max-width: 600px; /* 로고 이미지 크기 조절 */
+    height: auto;
+}
+
+.header .jn ul {
+    list-style: none; /* 기본 목록 스타일 제거 */
+    display: flex; /* 가로로 나열 */
+    gap: 45px; /* 메뉴 아이템 간 간격 */
+    margin: 0;
+    padding: 0;
+}
+
+.header .jn ul li {
+    display: inline-block;
+}
+
+.header .jn ul li a {
+    text-decoration: none; /* 밑줄 제거 */
+    color: #333; /* 텍스트 색상 */
+    font-size: 20px; /* 폰트 크기 */
+    font-weight: bold; /* 폰트 굵기 설정 */
+}
+
+.header .jn ul li a:hover {
+    text-decoration: underline; /* 마우스 오버 시 밑줄 표시 */
+}
+
+.sta04 {
+    max-width: 200px; /* 우측 로고 크기 조절 */
+    height: auto;
+    margin-left: 50px; /* 오른쪽 로고와 메뉴 사이 간격 */
+}
+
+/*/////////////////////////////*/
+.footer {
+    display: flex;
+    align-items: center;  /* 세로 중앙 정렬 */
+    justify-content: center;  /* 가로 중앙 정렬 */
+    padding: 20px 50px;  /* 좌우 패딩 설정 */
+    width: 100%;  /* footer가 전체 너비를 차지하도록 설정 */
+    box-sizing: border-box;  /* padding과 width를 함께 고려 */
+}
+
+.footer .sta {
+    margin-right: 30px;  /* 이미지와 텍스트 사이 간격 */
+    display: flex;
+    align-items: center;
+}
+
+.footer img {
+    max-width: 150px;  /* 이미지 크기 조절 */
+    height: auto;
+    margin-right: 15px; /* 텍스트와 이미지 사이 간격 조정 */
+}
+
+.footer .copy {
+    font-size: 14px;  /* 글씨 크기 조정 */
+    line-height: 1.5;  /* 줄 간격 조정 */
+    color: #333;  /* 텍스트 색상 */
+    text-align: left;  /* 텍스트 왼쪽 정렬 */
+}

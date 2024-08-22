@@ -8,3 +8,9 @@ def main_index(request):
 
 def post(request):
     return render(request, 'post.html')
+
+def about1(request):
+    return render(request, 'about1.html')
+
+def about2(request):
+    return render(request, 'about2.html')
