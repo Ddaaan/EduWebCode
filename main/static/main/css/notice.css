@@ -1,0 +1,124 @@
+/* 기본 스타일 설정 */
+body {
+    font-family: 'Nanum Gothic', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+/*///////////////////////////////////////////*/
+#header {
+    background-color: #fff; /* 배경색 설정 */
+    padding: 10px 20px; /* 헤더에 패딩 적용 */
+    border-bottom: 1px solid #ccc; /* 하단 경계선 */
+}
+
+.header {
+    display: flex; /* Flexbox를 사용하여 아이템 배치 */
+    justify-content: center; /* 아이템들을 좌우로 배치 */
+    align-items: center; /* 세로 가운데 정렬 */
+}
+
+.header .sta {
+    display: flex; /* 로고와 텍스트를 나란히 배치 */
+    align-items: center;
+    margin-right: 50px; /* 왼쪽 로고와 메뉴 사이 간격 */
+}
+
+.header .sta img {
+    max-width: 600px; /* 로고 이미지 크기 조절 */
+    height: auto;
+}
+
+.header .jn ul {
+    list-style: none; /* 기본 목록 스타일 제거 */
+    display: flex; /* 가로로 나열 */
+    gap: 45px; /* 메뉴 아이템 간 간격 */
+    margin: 0;
+    padding: 0;
+}
+
+.header .jn ul li {
+    display: inline-block;
+}
+
+.header .jn ul li a {
+    text-decoration: none; /* 밑줄 제거 */
+    color: #333; /* 텍스트 색상 */
+    font-size: 20px; /* 폰트 크기 */
+    font-weight: bold; /* 폰트 굵기 설정 */
+}
+
+.header .jn ul li a:hover {
+    text-decoration: underline; /* 마우스 오버 시 밑줄 표시 */
+}
+
+.sta04 {
+    max-width: 200px; /* 우측 로고 크기 조절 */
+    height: auto;
+    margin-left: 50px; /* 오른쪽 로고와 메뉴 사이 간격 */
+}
+
+.notice-header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+}
+
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar select, 
+.search-bar input[type="text"] {
+    padding: 5px;
+    margin-right: 10px;
+}
+
+.search-bar input[type="submit"] {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.register-button {
+    text-align: right;
+}
+
+.register-button button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}

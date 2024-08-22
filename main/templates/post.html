@@ -1,0 +1,90 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전라남도교육청 : 학교민주주의 지수</title>
+    <link rel="stylesheet" href="{% static 'main/css/notice.css' %}"> <!-- CSS 파일 경로 -->
+</head>
+<body>
+
+    <header id="header">
+        <section class="header">
+            <a class="sta" href="/jns/main"><img src="/static/main/images/logo.png" alt="전라남도 교육청 로고" /></a>
+            <nav class="jn">
+                <ul>
+                    <li class=""><a href="/About1/Index">학교민주주의 정책 이해</a></li>
+                    <li class=""><a href="/About2/Index">학교민주주의 지수 안내</a></li>
+                    <li class=""><a href="/jns/post">공지사항</a></li>
+                    <li class=""><a href="/File/Index">자료실</a></li>
+                    <li class=""><a href="/Admin/Index">학교관리자</a></li>
+                </ul>
+            </nav>
+            <img src="/static/main/images/sta04.png" alt="전남교육 아이좋아 로고" class="sta04">
+        </section>
+    </header>
+
+    <div class="notice-header">공지사항</div>
+
+    <div class="search-bar">
+        <form action="" method="GET">
+            <select name="search_type">
+                <option value="title">제목</option>
+                <!-- 다른 옵션 추가 가능 -->
+            </select>
+            <input type="text" name="query" placeholder="검색어를 입력하세요">
+            <input type="submit" value="검색">
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>등록일</th>
+                <th>조회수</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>4</td>
+                <td>2023년도 조사결과 조회 가능</td>
+                <td>2024-01-17</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>담당 선생님(학교관리자)께서는 '자료실'의 담당교원 매뉴얼을 확인하여 주십시오</td>
+                <td>2023-11-02</td>
+                <td>51</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>[조사 기간] 11월 6일(월) 10시 ~ 12월 1일(금)까지</td>
+                <td>2023-11-02</td>
+                <td>70</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>[학교관리자] 학교별 관리자 로그인 시 학교별 진행상황이 보이지 않을 경우, 크롬 브라우저 사용을 권장합니다</td>
+                <td>2021-10-22</td>
+                <td>76</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <button>&laquo;</button>
+        <button>1</button>
+        <button>&raquo;</button>
+    </div>
+
+    <div class="register-button">
+        <button>등록</button>
+    </div>
+
+</body>
+</html>
