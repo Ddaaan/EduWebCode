@@ -20,3 +20,6 @@ def file(request):
 
 def admin(request):
     return render(request, 'admin.html')
+
+def student_survey(request):
+    return render(request, 'student_survey.html')
