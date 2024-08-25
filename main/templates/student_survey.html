@@ -4,8 +4,9 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>전라남도교육청 : 학교민주주의 지수</title>
+    <title>전라남도교육청 : 학교민주주의 지수 설문조사</title>
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/student_sur.css' %}">
 </head>
 
 <body>
@@ -24,6 +25,37 @@
         <img src="/static/main/images/sta04.png" alt="전남교육 아이좋아 로고" class="sta04">
     </section>
 </header>
+
+
+<div class="survey-container">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="question">
+            <h3> 1번 문제 테스트입니다. </h3>
+            <div class="options">
+                <label class="option-label">
+                    <input type="radio" name="question1" value="1"> 1
+                </label>
+                <label class="option-label">
+                    <input type="radio" name="question1" value="2"> 2
+                </label>
+                <label class="option-label">
+                    <input type="radio" name="question1" value="3"> 3
+                </label>
+                <label class="option-label">
+                    <input type="radio" name="question1" value="4"> 4
+                </label>
+                <label class="option-label">
+                    <input type="radio" name="question1" value="5"> 5
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">제출</button>
+    </form>
+</div>
+
+
 
 <footer id="footer">
     <section class="footer">
