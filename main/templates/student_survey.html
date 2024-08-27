@@ -26,31 +26,21 @@
     </section>
 </header>
 
-
 <div class="survey-container">
     <form method="POST">
         {% csrf_token %}
-        <div class="question">
-            <h3> 1번 문제 테스트입니다. </h3>
-            <div class="options">
-                <label class="option-label">
-                    <input type="radio" name="question1" value="1"> 1
-                </label>
-                <label class="option-label">
-                    <input type="radio" name="question1" value="2"> 2
-                </label>
-                <label class="option-label">
-                    <input type="radio" name="question1" value="3"> 3
-                </label>
-                <label class="option-label">
-                    <input type="radio" name="question1" value="4"> 4
-                </label>
-                <label class="option-label">
-                    <input type="radio" name="question1" value="5"> 5
-                </label>
+        {% for question in questions %}
+            <div class="question">
+                <h3>{{ question.text }}</h3>
+                <div class="options">
+                    {% for option in options %}
+                        <label class="option-label">
+                            <input type="radio" name="question{{ question.id }}" value="{{ option }}"> {{ option }}
+                        </label>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-
+        {% endfor %}
         <button type="submit" class="submit-btn">제출</button>
     </form>
 </div>

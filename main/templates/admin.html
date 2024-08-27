@@ -5,9 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>전라남도교육청 : 학교민주주의 지수</title>
-    <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'main/css/styles.css?v=2' %}">
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/login.css' %}">
 </head>
 
 <body>
@@ -26,6 +25,22 @@
         <img src="/static/main/images/sta04.png" alt="전남교육 아이좋아 로고" class="sta04">
     </section>
 </header>
+
+<div class="wrapper">
+    <div class="form">
+      <div class="title">
+        Login
+      </div>
+      <form method="post">
+        <div class="input_wrap">
+          <span class="error_msg">Incorrect username or password. Please try again</span>
+            {% csrf_token %}
+            {{login_form}}
+        </div>
+        <button class="btn disabled input_wrap" style="padding: 15px" type="submit" >Login</button>
+      </form>
+    </div>
+  </div>
 
 <footer id="footer">
     <section class="footer">
