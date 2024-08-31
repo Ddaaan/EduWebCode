@@ -8,7 +8,6 @@ urlpatterns = [
     path('about2/', views.about2, name='about2'),
     path('file/', views.file, name='file'),
     path('admin/', views.admin, name='admin'),
-    path('select-info/', views.info, name='info'),
     
     path('ele-student-survey/', views.ele_stuSur_question, name='ele-student-s'),
     path('mid-student-survey/', views.midHigh_stuSur_question, name='mid-student-s'),
