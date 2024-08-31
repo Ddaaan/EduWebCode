@@ -1,0 +1,55 @@
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.login-container {
+    background-color: #ffffff;
+    padding: 40px 50px; /* 패딩을 늘려서 더 큰 공간을 확보 */
+    border-radius: 8px;
+    width: 400px; /* 너비를 400px로 증가 */
+}
+
+.login-container h2 {
+    margin-bottom: 30px; /* 제목과 입력 필드 사이의 여백을 증가 */
+    font-size: 28px; /* 제목의 폰트 크기를 증가 */
+    text-align: center;
+    color: #333;
+}
+
+.input-group {
+    margin-bottom: 20px; /* 입력 필드 사이의 여백을 증가 */
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px; /* 레이블과 입력 필드 사이의 여백을 증가 */
+    font-size: 16px; /* 레이블의 폰트 크기를 증가 */
+    color: #666;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px; /* 입력 필드의 패딩을 증가 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px; /* 입력 필드의 폰트 크기를 증가 */
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 12px; /* 버튼의 패딩을 증가 */
+    background-color: #007BFF;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 18px; /* 버튼의 폰트 크기를 증가 */
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}

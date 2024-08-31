@@ -4,9 +4,9 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>전라남도교육청 : 학교민주주의 지수</title>
+    <title>전라남도교육청 : 학교민주주의 지수 설문조사</title>
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'main/css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/student_sur.css' %}">
 </head>
 
 <body>
@@ -26,21 +26,26 @@
     </section>
 </header>
 
-<div class="wrapper">
-    <div class="form">
-      <div class="title">
-        Login
-      </div>
-      <form method="post">
-        <div class="input_wrap">
-          <span class="error_msg">Incorrect username or password. Please try again</span>
-            {% csrf_token %}
-            {{login_form}}
-        </div>
-        <button class="btn disabled input_wrap" style="padding: 15px" type="submit" >Login</button>
-      </form>
-    </div>
-  </div>
+<div class="survey-container">
+    <form method="POST">
+        {% csrf_token %}
+        {% for question in questions %}
+            <div class="question">
+                <h4>{{ forloop.counter }}. {{ question.text }}</h4>
+                <div class="options">
+                    {% for option in options %}
+                        <label class="option-label">
+                            <input type="radio" name="question{{ question.id }}" value="{{ option }}"> {{ option }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="submit-btn">제출</button>
+    </form>
+</div>
+
+
 
 <footer id="footer">
     <section class="footer">
