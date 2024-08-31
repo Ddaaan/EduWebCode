@@ -8,3 +8,4 @@ class Response(models.Model):
     
     def __str__(self):
         return f"질문에 답변하세요 {self.question_id}"
+    
