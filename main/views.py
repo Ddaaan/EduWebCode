@@ -6,6 +6,9 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 
+from django.shortcuts import render
+from main.models import School
+
 # Create your views here.
 def main_index(request):
     return render(request, "mainpage.html")
@@ -25,8 +28,12 @@ def file(request):
 def admin(request):
     return render(request, 'admin.html')
 
-def info(request):
-    return render(request, 'infopage.html')
+
+# 지역명 선택
+def info_page(request):
+    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    print("Regions:", regions) #debug line
+    return render(request, 'infopage.html', {'regions':regions})
 
 
 # 로그인 화면 

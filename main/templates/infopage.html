@@ -30,19 +30,25 @@
 <div class="info-container">
     <h2>본인의 정보를 선택하세요</h2>
     <form method="POST">
+        {% csrf_token %}
         <label for="region">지역</label>
         <select id="region" name="region">
-            <option value="지역1">지역1</option>
-            <option value="지역2">지역2</option>
-            <option value="지역3">지역3</option>
+            {%for region in regions %}
+                <option value="{{ region }}">{{ region }}</option>
+            {% endfor %}
         </select>
         <br><br>
 
         <label for="school-level">학교급</label>
         <select id="school-level" name="school-level">
+            <option value="유치원">유치원</option>
             <option value="초등학교">초등학교</option>
             <option value="중학교">중학교</option>
             <option value="고등학교">고등학교</option>
+            <option value="고등학교">특수학교</option>
+            <option value="각종학교(초)">각종학교(초)</option>
+            <option value="각종학교(중)">각종학교(중)</option>
+            <option value="각종학교(고)">각종학교(고)</option>
         </select>
         <br><br>
 
