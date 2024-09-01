@@ -36,11 +36,11 @@ def info_page(request):
     regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
 
     role_messages = {
-        'student' : '학생의 정보를 선택하세요',
-        'parent' : '학부모의 정보를 선택하세요',
-        'teacher' : '교원의 정보를 선택하세요'
+        'student' : '학생 정보를 선택하세요',
+        'parent' : '학부모 정보를 선택하세요',
+        'teacher' : '교원 정보를 선택하세요'
     }
-    message = role_messages.get(role, '본인의 정보를 선택하세요')
+    message = role_messages.get(role, '본인 정보를 선택하세요')
 
     return render(request, 'infopage.html', {'regions':regions, 'message': message})
 
@@ -51,9 +51,7 @@ def get_school_names(request):
     
     schools = School.objects.filter(district=region, school_level=school_level).values('school_name')
     school_list = list(schools)
-    
-    #print(f"Filtered Schools: {school_list}")  # 콘솔에 필터링된 결과를 출력하여 확인
-    
+        
     return JsonResponse({'schools' : school_list})
 
 
