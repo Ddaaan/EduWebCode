@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.views.generic import View
 
 from django.contrib.auth import login, authenticate
@@ -31,9 +32,29 @@ def admin(request):
 
 # 지역명 선택
 def info_page(request):
+    role = request.GET.get('role', 'default')
     regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
-    print("Regions:", regions) #debug line
-    return render(request, 'infopage.html', {'regions':regions})
+
+    role_messages = {
+        'student' : '학생의 정보를 선택하세요',
+        'parent' : '학부모의 정보를 선택하세요',
+        'teacher' : '교원의 정보를 선택하세요'
+    }
+    message = role_messages.get(role, '본인의 정보를 선택하세요')
+
+    return render(request, 'infopage.html', {'regions':regions, 'message': message})
+
+# 학교명 정렬
+def get_school_names(request):
+    region = request.GET.get('region')
+    school_level = request.GET.get('school_level')
+    
+    schools = School.objects.filter(district=region, school_level=school_level).values('school_name')
+    school_list = list(schools)
+    
+    #print(f"Filtered Schools: {school_list}")  # 콘솔에 필터링된 결과를 출력하여 확인
+    
+    return JsonResponse({'schools' : school_list})
 
 
 # 로그인 화면 

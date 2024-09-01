@@ -28,11 +28,12 @@
 
 
 <div class="info-container">
-    <h2>본인의 정보를 선택하세요</h2>
+    <h2>{{ message }}</h2>
     <form method="POST">
         {% csrf_token %}
         <label for="region">지역</label>
-        <select id="region" name="region">
+        <select id="region" name="region" onchange="updateSchoolNames()">
+            <option value="">지역을 선택하세요</option>
             {%for region in regions %}
                 <option value="{{ region }}">{{ region }}</option>
             {% endfor %}
@@ -40,7 +41,8 @@
         <br><br>
 
         <label for="school-level">학교급</label>
-        <select id="school-level" name="school-level">
+        <select id="school-level" name="school-level" onchange="updateSchoolNames()">
+            <option value="">학교급을 선택하세요</option>
             <option value="유치원">유치원</option>
             <option value="초등학교">초등학교</option>
             <option value="중학교">중학교</option>
@@ -54,9 +56,7 @@
 
         <label for="school-name">학교명</label>
         <select id="school-name" name="school-name">
-            <option value="학교1">학교1</option>
-            <option value="학교2">학교2</option>
-            <option value="학교3">학교3</option>
+            <option value="">먼저 지역과 학교급을 선택하세요</option>
         </select>
         <br><br>
 
@@ -77,5 +77,38 @@
         </p>
     </section>
 </footer>
+
+<!-- javaScript -->
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <script>
+
+    function updateSchoolNames() {
+        console.log("updateSchoolNames 함수가 호출되었습니다!"); // 이 줄을 추가하여 함수가 호출되는지 확인
+        const region = $('#region').val();
+        const schoolLevel = $('#school-level').val();
+
+        if (region && schoolLevel) {
+            console.log("Sending AJAX request:", region, schoolLevel);  // 이 줄을 추가하여 어떤 값으로 요청이 발생하는지 확인
+            $.ajax({
+                url : "{% url 'get_school_names' %}",
+                data : {
+                    'region' : region,
+                    'school_level' : schoolLevel
+                },
+                dataType: 'json', // 명시적으로 JSON 데이터를 받는다고 선언
+                success : function (data) {
+                    const schoolSelect = $('#school-name');
+                    schoolSelect.empty();
+                    data.schools.forEach(function (school) {
+                        console.log("School Data:", school);  // 추가된 부분: 학교 데이터를 개별적으로 출력
+                        const optionText = $('<div>').text(school.school_name).html(); // HTML 인코딩 처리
+                        schoolSelect.append(new Option(optionText, optionText));
+                    });
+                }
+            });
+        }
+    }
+</script>
+
 </body>
 </html>
