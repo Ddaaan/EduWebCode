@@ -41,8 +41,49 @@ def info_page(request):
         'teacher' : '교원 정보를 선택하세요'
     }
     message = role_messages.get(role, '본인 정보를 선택하세요')
+    
+    if request.method == "POST":
+        region = request.POST.get('region')
+        school_level = request.POST.get('school-level')
+        school_name = request.POST.get('school-name')
+        school_id = request.POST.get('school-id')
+        
+        try:
+            # 조건에 맞는 첫 번째 학교를 가져옵니다.
+            school = School.objects.filter(
+                district=region,
+                school_level=school_level,
+                school_name=school_name,
+                school_id=school_id
+            ).first()
+            
+            if school is None:
+                messages.error(request, "입력한 정보와 일치하는 학교가 없습니다.")
+                return render(request, 'infopage.html', {'regions': regions, 'message': message})
 
-    return render(request, 'infopage.html', {'regions':regions, 'message': message})
+            # 학교 정보가 일치하면 role에 따라 페이지 리디렉션
+            if role == 'student':
+                if school_level in ['초등학교', '각종학교(초)']:
+                    return redirect('ele-student-s')
+                elif school_level in ['중학교', '고등학교', '각종학교(중)', '각종학교(고)']:
+                    return redirect('midhigh-student-s')
+            elif role == 'parent':
+                if school_level == '유치원':
+                    return redirect('kinder-parents-s')
+                elif school_level in ['초등학교', '중학교', '고등학교', '각종학교(초)', '각종학교(중)', '각종학교(고)']:
+                    return redirect('school-parents-s')
+            elif role == 'teacher':
+                if school_level == '유치원':
+                    return redirect('kinder-teacher-s')
+                elif school_level in ['초등학교', '중학교', '고등학교', '각종학교(초)', '각종학교(중)', '각종학교(고)']:
+                    return redirect('school-teacher-s')
+            else:
+                messages.error(request, "유효하지 않은 접근입니다.")
+        except School.DoesNotExist:
+            messages.error(request, "입력한 정보와 일치하는 학교가 없습니다.")
+            return render(request, 'infopage.html', {'regions': regions, 'message': message})
+
+    return render(request, 'infopage.html', {'regions': regions, 'message': message})
 
 # 학교명 정렬
 def get_school_names(request):
