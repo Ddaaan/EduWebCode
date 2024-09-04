@@ -25,3 +25,8 @@ class Post(models.Model):
     
     def __str__(self):
         return self.titile
+    
+class PostView(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    ip_address = models.GenericIPAddressField()
+    viewed_at = models.DateTimeField(auto_now_add=True)

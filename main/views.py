@@ -9,7 +9,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from django.shortcuts import render, redirect, get_object_or_404
 from main.models import School
-from .models import Post
+from .models import Post, PostView
 from django.utils import timezone
 
 # Create your views here.
@@ -91,6 +91,15 @@ def get_school_names(request):
         
     return JsonResponse({'schools' : school_list})
 
+# IP 주소 가져오는 함수
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
 ##공지사항
 #게시글 목록
 def post_list(request):
@@ -109,9 +118,17 @@ def post_create(request):
 #게시글 보기
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    post.views += 1 #조회수
-    post.save()
+    
+    client_ip = get_client_ip(request)
+    
+    if not PostView.objects.filter(post=post, ip_address=client_ip).exists():
+        post.views += 1 #조회수
+        post.save()
+        
+        PostView.objects.create(post=post, ip_address=client_ip)
+        
     return render(request, 'post_detail.html', {'post' : post})
+
 
 
 
