@@ -30,13 +30,16 @@
     <div class="write">
         <h1>글쓰기</h1>
 
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <label for="title">제목:</label><br>
             <input type="text" id="title" name="title" required><br><br>
 
             <label for="content">내용:</label><br>
             <textarea id="content" name="content" required></textarea><br><br>
+
+            <label for="file">파일:</label><br>
+            <input type="file" id="file" name="file"><br><br>
 
             <button type="submit">저장</button>
         </form>

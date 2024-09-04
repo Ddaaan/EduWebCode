@@ -1,9 +1,10 @@
 from django.urls import path, include
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('main/', views.main_index),
-    #path('post/', views.post, name='post'),
     path('about1/', views.about1, name='about1'),
     path('about2/', views.about2, name='about2'),
     path('file/', views.file, name='file'),
@@ -24,3 +25,7 @@ urlpatterns = [
     path('post/create/', views.post_create, name='post_create'), 
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),
 ]
+
+#미디어 파일 다운로드
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

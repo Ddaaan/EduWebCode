@@ -111,8 +111,15 @@ def post_create(request):
     if request.method == 'POST':
         title = request.POST['title']
         content = request.POST['content']
-        Post.objects.create(title=title, content=content, created_at=timezone.now()) #현재시간 불러서 저장
+        file = request.FILES.get('file') #파일 가져오기
+        
+        # 디버깅: 파일이 제대로 처리되는지 확인
+        print("파일 처리:", file)
+        
+        Post.objects.create(title=title, content=content, file=file, created_at=timezone.now()) #게시글 저장
+        
         return redirect('post_list') #작성 후 목록으로 이동
+    
     return render(request, 'post_create.html')
 
 #게시글 보기
@@ -121,7 +128,7 @@ def post_detail(request, post_id):
     
     client_ip = get_client_ip(request)
     
-    if not PostView.objects.filter(post=post, ip_address=client_ip).exists():
+    if not PostView.objects.filter(post=post, ip_address=client_ip).exists(): #접속한 ip로 이미 조회했는지 확인
         post.views += 1 #조회수
         post.save()
         

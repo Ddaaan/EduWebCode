@@ -22,6 +22,7 @@ class Post(models.Model):
     content = models.TextField() #내용
     created_at = models.DateTimeField(default=timezone.now) #작성일
     views = models.IntegerField(default=0) #조회수
+    file = models.FileField(upload_to='uploads/', blank=True, null=True) #첨부파일
     
     def __str__(self):
         return self.titile
