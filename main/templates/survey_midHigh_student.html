@@ -28,6 +28,7 @@
 
 <div class="survey-container">
     <form method="POST">
+        <h2>중고등학생용 설문조사</h2>
         {% csrf_token %}
         {% for question in questions %}
             <div class="question">

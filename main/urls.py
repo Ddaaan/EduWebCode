@@ -12,8 +12,7 @@ urlpatterns = [
     path('get-school-names/', views.get_school_names, name='get_school_names'),
     
     path('ele-student-survey/', views.ele_stuSur_question, name='ele-student-s'),
-    path('mid-student-survey/', views.midHigh_stuSur_question, name='mid-student-s'),
-    path('high-student-survey/', views.midHigh_stuSur_question, name='high-student-s'),
+    path('midhigh-student-survey/', views.midHigh_stuSur_question, name='midhigh-student-s'),
     path('kinder-parents-survey/', views.kinder_parSur_question, name='kinder-parents-s'),
     path('school-parents-survey/', views.school_parSur_question, name='school-parents-s'), 
     path('kinder-teacher-survey/', views.kinder_teaSur_question, name='kinder-teacher-s'),
