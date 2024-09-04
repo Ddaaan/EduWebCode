@@ -49,13 +49,7 @@ def info_page(request):
         school_id = request.POST.get('school-id')
         
         try:
-            # 조건에 맞는 첫 번째 학교를 가져옵니다.
-            school = School.objects.filter(
-                district=region,
-                school_level=school_level,
-                school_name=school_name,
-                school_id=school_id
-            ).first()
+            school = School.objects.get(district = region, school_level=school_level, school_name=school_name, school_id=school_id)
             
             if school is None:
                 messages.error(request, "입력한 정보와 일치하는 학교가 없습니다.")
