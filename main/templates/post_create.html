@@ -1,0 +1,58 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전라남도교육청 : 학교민주주의 지수</title>
+    <link rel="stylesheet" href="{% static 'main/css/notice.css' %}"> <!-- CSS 파일 경로 -->
+    <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
+</head>
+<body>
+
+    <header id="header">
+        <section class="header">
+            <a class="sta" href="/jns/main"><img src="/static/main/images/logo.png" alt="전라남도 교육청 로고" /></a>
+            <nav class="jn">
+                <ul>
+                    <li class=""><a href="/jns/about1">학교민주주의 정책 이해</a></li>
+                <li class=""><a href="/jns/about2">학교민주주의 지수 안내</a></li>
+                <li class=""><a href="/jns/post">공지사항</a></li>
+                <li class=""><a href="/jns/file">자료실</a></li>
+                <li class=""><a href="/jns/admin">학교관리자</a></li>
+                </ul>
+            </nav>
+            <img src="/static/main/images/sta04.png" alt="전남교육 아이좋아 로고" class="sta04">
+        </section>
+    </header>
+
+    <div class="write">
+        <h1>글쓰기</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+            <label for="title">제목:</label><br>
+            <input type="text" id="title" name="title" required><br><br>
+
+            <label for="content">내용:</label><br>
+            <textarea id="content" name="content" required></textarea><br><br>
+
+            <button type="submit">저장</button>
+        </form>
+
+        <a href="{% url 'post_list' %}">돌아가기</a>
+    </div>
+
+
+    <footer id="footer">
+        <section class="footer">
+            <a class="sta"><img src="/static/main/images/logo.png" alt="전라남도 교육청" /></a>
+            <p class="copy">
+                (58564) 전라남도 무안군 삼향읍 어진누리길 10
+            </p>
+        </section>
+    </footer>
+
+</body>
+</html>

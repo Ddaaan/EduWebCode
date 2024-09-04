@@ -7,8 +7,10 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from main.models import School
+from .models import Post
+from django.utils import timezone
 
 # Create your views here.
 def main_index(request):
@@ -89,28 +91,27 @@ def get_school_names(request):
         
     return JsonResponse({'schools' : school_list})
 
+##공지사항
+#게시글 목록
+def post_list(request):
+    posts = Post.objects.all().order_by('-created_at') #작성일 내림차순 정렬
+    return render(request, 'post_list.html', {'posts' : posts})
 
-# 로그인 화면 
-def login_request(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.info(request, f"You are now logged in as {username}.")
-                return redirect("/home")
-            else:
-                messages.error(request,"Invalid username or password.")
-        else:
-            messages.error(request,"Invalid username or password.")
-    form = AuthenticationForm()
-    return render(request=request, template_name="main/login.html", context={"login_form":form})
+#게시글 작성
+def post_create(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        content = request.POST['content']
+        Post.objects.create(title=title, content=content, created_at=timezone.now()) #현재시간 불러서 저장
+        return redirect('post_list') #작성 후 목록으로 이동
+    return render(request, 'post_create.html')
 
-
-
+#게시글 보기
+def post_detail(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    post.views += 1 #조회수
+    post.save()
+    return render(request, 'post_detail.html', {'post' : post})
 
 
 
