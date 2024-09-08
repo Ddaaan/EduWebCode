@@ -19,6 +19,8 @@ urlpatterns = [
     path('school-parents-survey/', views.school_parSur_question, name='school-parents-s'), 
     path('kinder-teacher-survey/', views.kinder_teaSur_question, name='kinder-teacher-s'),
     path('school-teacher-survey/', views.school_teaSur_question, name='school-teacher-s'),  
+    path('survey-complete/', views.survey_complete, name='survey_complete'),
+    path('submit-survey/', views.handle_survey_response, name='handle_survey_response'),
     
     #공지사항 url
     path('post/', views.post_list, name='post_list'),

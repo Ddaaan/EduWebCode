@@ -12,6 +12,10 @@ from main.models import School
 from .models import Post, PostView
 from django.utils import timezone
 
+import pandas as pd
+import openpyxl
+import os
+
 # Create your views here.
 def main_index(request):
     return render(request, "mainpage.html")
@@ -30,6 +34,9 @@ def file(request):
 
 def admin(request):
     return render(request, 'admin.html')
+
+def survey_complete(request):
+    return render(request, 'survey_complete.html')
 
 
 # 지역명 선택
@@ -58,6 +65,9 @@ def info_page(request):
                 return render(request, 'infopage.html', {'regions': regions, 'message': message})
 
             # 학교 정보가 일치하면 role에 따라 페이지 리디렉션
+            # school_id를 세션에 저장
+            request.session['school_id'] = school_id
+            
             if role == 'student':
                 if school_level in ['초등학교', '각종학교(초)']:
                     return redirect('ele-student-s')
@@ -91,6 +101,7 @@ def get_school_names(request):
         
     return JsonResponse({'schools' : school_list})
 
+##공지사항
 # IP 주소 가져오는 함수
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -100,7 +111,6 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-##공지사항
 #게시글 목록
 def post_list(request):
     posts = Post.objects.all().order_by('-created_at') #작성일 내림차순 정렬
@@ -143,6 +153,7 @@ def post_detail(request, post_id):
 #초등학생용 설문
 def ele_stuSur_question(request):
     # 학교문화 관련 질문 (1~8)
+    options = ["매우 아니다", "아니다", "보통이다", "그렇다", "매우 그렇다"]
     school_culture = [
         {'id': 1, 'text': '우리 학교 학생들은 학급 규칙과 약속을 잘 지키는 편이다.'},
         {'id': 2, 'text': '나는 내 생각과 느낌을 친구나 선생님에게 잘 표현하고 친구나 선생님의 생각과 느낌도 잘 이해하려고 노력한다.'},
@@ -174,15 +185,65 @@ def ele_stuSur_question(request):
         {'id': 20, 'text': '우리 학교 학생들은 학교와 사회에서 일어나는 문제에 관심을 가지고 해결하기 위해 노력한다.'},
         {'id': 21, 'text': '(자기 평가) 나는 수업시간이나 학교 활동 중에 토의․토론, 체험활동, 행사 활동 등에 적극적으로 참여한다.'}
     ]
-    
-    options = range(1, 6)
 
     return render(request, 'survey_ele_student.html', {
         'school_culture': school_culture,
         'school_structure': school_structure,
         'democratic_citizenship': democratic_citizenship,
-        'options': options
+        'options': options,
+        'school_id' : request.session.get('school_id')
     })
+    
+    
+#설문 응답 처리 함수
+def handle_survey_response(request):
+    excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student.xlsx"
+
+    if request.method == 'POST':
+        responses = []
+        for i in range(1, 22):
+            response = int(request.POST.get(f'question{i}', 0))
+            responses.append(response)
+
+        # 디버깅: 응답 값 출력
+        print("선택한 응답 값들:", responses)
+
+        wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+        ws = wb.active
+        
+        school_id = request.POST.get('school_id')
+        print(f"전달된 학교 ID: {school_id}")  # 디버깅: school_id가 제대로 전달되었는지 확인
+        
+        row_to_update = None
+        # 학교 ID가 있는 열을 찾아서 해당 행을 가져옴
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=4, max_col=4):  # 4번째 열에 학교 ID가 있음
+            if str(row[0].value).strip() == str(school_id).strip():
+                row_to_update = row[0].row
+                print(f"학교 ID {school_id}가 {row_to_update}번째 행에 있습니다.")  # 디버깅: 학교 ID가 몇 번째 행에 있는지 출력
+                break
+
+        if row_to_update:
+            # 응답 값을 해당 행의 문항 열에 추가 (5번째 열부터 응답 저장)
+            for i, response in enumerate(responses, start=5):
+                current_value = ws.cell(row=row_to_update, column=i).value or 0  # 현재 값을 가져옴, 없으면 0
+                ws.cell(row=row_to_update, column=i).value = current_value + response
+                print(f"학교 ID {school_id}에 대한 응답이 {row_to_update}번째 행의 {i}번째 열에 성공적으로 저장되었습니다.")  # 디버깅: 응답 저장 확인
+
+            # 엑셀 파일 저장
+            wb.save(excel_file_path)
+        else:
+            print(f"학교 ID {school_id}를 찾을 수 없습니다.")  # 디버깅: 학교 ID가 없을 경우
+
+    return redirect('survey_complete')
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
 
