@@ -38,8 +38,11 @@ def admin(request):
 def survey_complete(request):
     return render(request, 'survey_complete.html')
 
+def statistice_admin(request):
+    return render(request, 'statistics_admin.html', {'regions':regions})
 
-# 지역명 선택
+
+# 정보 선택
 def info_page(request):
     role = request.GET.get('role', 'default')
     regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
@@ -147,6 +150,142 @@ def post_detail(request, post_id):
     return render(request, 'post_detail.html', {'post' : post})
 
 
+#설문 관련 함수
+#설문 응답 처리 함수
+def handle_survey_response(request):
+    excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student.xlsx"
+
+    if request.method == 'POST':
+        responses = []
+        for i in range(1, 22):
+            response = int(request.POST.get(f'question{i}', 0))
+            responses.append(response)
+
+        # 디버깅: 응답 값 출력
+        print("선택한 응답 값들:", responses)
+
+        wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+        ws = wb.active
+        
+        school_id = request.POST.get('school_id')
+        print(f"전달된 학교 ID: {school_id}")  # 디버깅: school_id가 제대로 전달되었는지 확인
+        
+        row_to_update = None
+        # 학교 ID가 있는 열을 찾아서 해당 행을 가져옴
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=4, max_col=4):  # 4번째 열에 학교 ID가 있음
+            if str(row[0].value).strip() == str(school_id).strip():
+                row_to_update = row[0].row
+                print(f"학교 ID {school_id}가 {row_to_update}번째 행에 있습니다.")  # 디버깅: 학교 ID가 몇 번째 행에 있는지 출력
+                break
+
+        if row_to_update:
+            # 응답 값을 해당 행의 문항 열에 추가 (5번째 열부터 응답 저장)
+            for i, response in enumerate(responses, start=5):
+                current_value = ws.cell(row=row_to_update, column=i).value or 0  # 현재 값을 가져옴, 없으면 0
+                ws.cell(row=row_to_update, column=i).value = current_value + response
+                print(f"학교 ID {school_id}에 대한 응답이 {row_to_update}번째 행의 {i}번째 열에 성공적으로 저장되었습니다.")  # 디버깅: 응답 저장 확인
+
+            current_value = ws.cell(row=row_to_update, column=27).value or 0  # 현재 값을 가져옴, 없으면 0
+            ws.cell(row=row_to_update, column=27).value = current_value + 1 #응답 인원 증가
+            
+            # 엑셀 파일 저장
+            wb.save(excel_file_path)
+        else:
+            print(f"학교 ID {school_id}를 찾을 수 없습니다.")  # 디버깅: 학교 ID가 없을 경우
+
+    return redirect('survey_complete')
+
+
+# 각 학교별 결과 통계 - 초등학교
+def school_statistics(request):
+    # 지역 데이터 가져오기
+    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    
+    if request.method == 'POST':
+        school_name = request.POST.get('school_name')
+        #role = request.POST.get('role') #학생 / 학부모 / 교원 통계 구분
+        print(f"전달된 학교 이름: {school_name}")  # 디버깅: school_name이 제대로 전달되었는지 확인
+        #print(f"전달된 role: {role}")  # 디버깅: role이 제대로 전달되었는지 확인
+
+        excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student.xlsx"
+        wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+        ws = wb.active
+
+        row_to_static = None
+        responses = []
+        people_count = None
+        # 학교명이 있는 열을 찾아서 해당 행을 가져옴
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):  # 2번째 열에 학교명이 있음
+            if str(row[0].value).strip() == str(school_name).strip():
+                row_to_static= row[0].row
+                print(f"학교명 {school_name}가 {row_to_static}번째 행에 있습니다.")  # 디버깅
+                break
+            
+        if row_to_static:
+            ### 1. 각 항목별 평균 구하기
+            # 저장되어 있는 응답 값을 리스트에 불러오기 
+            for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=5, max_col=26):
+                for value in cell:
+                    responses.append(value.value or 0)
+            
+            # 응답 인원 불러오기
+            for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=27, max_col=27):
+                for value in cell:
+                    people_count = value.value
+                
+            print(f"{school_name}에 대한 응답값 합산들 : {responses}") #디버깅
+            print(f"{school_name}에 대한 응답인원 : {people_count}") #디버깅
+            
+            average_response = [response / people_count for response in responses] #각 항목당 평균 구해둔 리스트
+            print(f"{school_name}에 대한 평균 응답값들 : {average_response}")  # 디버깅
+            
+            
+            ### 2. 영역별 평균 구하기
+            question = 1
+            section_response = [0, 0, 0]
+            
+            for response in average_response:
+                if question <= 8:
+                    section_response[0] += response
+                elif question <= 14:
+                    section_response[1] += response
+                else:
+                    section_response[2] += response
+                    
+                question+=1
+            
+            average_section_response = []
+            average_section_response.append(round(section_response[0] / 8, 1))
+            average_section_response.append(round(section_response[1] / 6, 1))
+            average_section_response.append(round(section_response[2] / 7, 1))
+            
+            print(f"{school_name}에 대한 영역별 합산 : {section_response}")  # 디버깅
+            print(f"{school_name}에 대한 영역별 평균 : {average_section_response}")  # 디버깅    
+            
+            
+            ### 3. 전체 평균 구하기
+            average_total_response = [0]
+            for response in average_section_response:
+                average_total_response[0] += response
+            
+            average_total_response[0] = round(average_total_response[0] / 3, 1)
+            
+            print(f"{school_name}에 대한 전체 평균 : {average_total_response}")  # 디버깅
+            
+        
+        return render(request, 'statistics_admin_temp.html', {
+            'school_name': school_name,
+            'responses': responses,
+            'average_response':average_response,
+            'average_section_response':average_section_response,
+            'average_total_response':average_total_response,
+            'regions': regions  # 지역 데이터 전달
+        })  
+    
+    # GET 요청일 때 지역 데이터 전달
+    return render(request, 'statistics_admin.html', {'regions': regions})
+    
+    
 
 
 ########################################### 설문 질문 리스트 ####################################################
@@ -193,58 +332,6 @@ def ele_stuSur_question(request):
         'options': options,
         'school_id' : request.session.get('school_id')
     })
-    
-    
-#설문 응답 처리 함수
-def handle_survey_response(request):
-    excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student.xlsx"
-
-    if request.method == 'POST':
-        responses = []
-        for i in range(1, 22):
-            response = int(request.POST.get(f'question{i}', 0))
-            responses.append(response)
-
-        # 디버깅: 응답 값 출력
-        print("선택한 응답 값들:", responses)
-
-        wb = openpyxl.load_workbook(excel_file_path, data_only=True)
-        ws = wb.active
-        
-        school_id = request.POST.get('school_id')
-        print(f"전달된 학교 ID: {school_id}")  # 디버깅: school_id가 제대로 전달되었는지 확인
-        
-        row_to_update = None
-        # 학교 ID가 있는 열을 찾아서 해당 행을 가져옴
-        for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=4, max_col=4):  # 4번째 열에 학교 ID가 있음
-            if str(row[0].value).strip() == str(school_id).strip():
-                row_to_update = row[0].row
-                print(f"학교 ID {school_id}가 {row_to_update}번째 행에 있습니다.")  # 디버깅: 학교 ID가 몇 번째 행에 있는지 출력
-                break
-
-        if row_to_update:
-            # 응답 값을 해당 행의 문항 열에 추가 (5번째 열부터 응답 저장)
-            for i, response in enumerate(responses, start=5):
-                current_value = ws.cell(row=row_to_update, column=i).value or 0  # 현재 값을 가져옴, 없으면 0
-                ws.cell(row=row_to_update, column=i).value = current_value + response
-                print(f"학교 ID {school_id}에 대한 응답이 {row_to_update}번째 행의 {i}번째 열에 성공적으로 저장되었습니다.")  # 디버깅: 응답 저장 확인
-
-            # 엑셀 파일 저장
-            wb.save(excel_file_path)
-        else:
-            print(f"학교 ID {school_id}를 찾을 수 없습니다.")  # 디버깅: 학교 ID가 없을 경우
-
-    return redirect('survey_complete')
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
 
 
 # 중고등학생용 설문
@@ -283,7 +370,7 @@ def midHigh_stuSur_question(request):
         {'id': 22, 'text': '(자기 평가) 나는 수업시간이나 학교 활동 중에 친구들과 협력하여 토의․토론, 체험활동, 캠페인, 행사 활동 등에 적극적으로 참여한다.'}
     ]
 
-    options = range(1, 6)
+    options = ["매우 아니다", "아니다", "보통이다", "그렇다", "매우 그렇다"]
 
     return render(request, 'survey_midHigh_student.html', {
         'school_culture': school_culture,
@@ -331,7 +418,7 @@ def kinder_parSur_question(request):
         {'id': 23, 'text': '(자기평가) 나는 우리 유치원의 교육적 변화와 발전을 위해 다양한 활동에 참여한다. *학부모회 활동, 동아리활동, 토론회 참여, 학부모 연수 참여, 지역사회 활동 등'}
     ]
 
-    options = range(1, 6)
+    options = ["매우 아니다", "아니다", "보통이다", "그렇다", "매우 그렇다"]
 
     return render(request, 'survey_kinder_parents.html', {
         'school_culture': school_culture,
@@ -379,7 +466,7 @@ def school_parSur_question(request):
         {'id': 23, 'text': '(자기평가) 나는 우리 학교의 교육적 변화와 발전을 위해 다양한 활동에 참여하고 있다.*학부모회 활동, 동아리활동, 토론회 참여, 학부모 연수 참여, 지역사회 활동 등'}
     ]
 
-    options = range(1, 6)
+    options = ["매우 아니다", "아니다", "보통이다", "그렇다", "매우 그렇다"]
 
     return render(request, 'survey_school_parents.html', {
         'school_culture': school_culture,
@@ -429,7 +516,7 @@ def kinder_teaSur_question(request):
         {'id': 25, 'text': '(자기평가) 나는 민주시민교육과 학교민주주의 실현을 위한 활동에 적극적으로 참여한다.'}
     ]
 
-    options = range(1, 6)
+    options = ["매우 아니다", "아니다", "보통이다", "그렇다", "매우 그렇다"]
 
     return render(request, 'survey_kinder_teacher.html', {
         'school_culture': school_culture,
@@ -479,7 +566,7 @@ def school_teaSur_question(request):
         {'id': 25, 'text': '(자기평가) 나는 민주시민교육과 학교민주주의 실현을 위한 활동에 적극적으로 참여한다.'}
     ]
 
-    options = range(1, 6)
+    options = ["매우 아니다", "아니다", "보통이다", "그렇다", "매우 그렇다"]
 
     return render(request, 'survey_school_teacher.html', {
         'school_culture': school_culture,
