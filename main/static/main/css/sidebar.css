@@ -1,0 +1,37 @@
+/* 사이드바 스타일 - header 아래에서 시작, 고정된 사이드바 */
+.sidebar {
+    height: calc(100vh - 80px); /* 화면 높이에서 헤더 높이를 제외 */
+    width: 220px;
+    position: fixed;
+    top: 88px; /* 헤더 높이만큼 아래로 위치 */
+    left: 0;
+    background-color: #111;
+    padding-top: 20px;
+    z-index: 1;
+    overflow-y: auto; /* 사이드바 내용이 길어지면 스크롤 가능하게 설정 */
+}
+
+/* 사이드바 링크 스타일 */
+.sidebar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 18px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+/* 링크 hover 스타일 */
+.sidebar a:hover {
+    background-color: #575757;
+}
+
+/* 메인 콘텐츠 - 사이드바를 고려하여 우측에 위치 */
+.main-content {
+    margin-left: 240px; /* 사이드바 너비에 맞춰서 이동 */
+    padding: 20px;
+    background-color: #f1f1f1;
+    min-height: calc(100vh - 80px); /* 전체 화면 높이에서 헤더 높이를 제외 */
+    position: relative;
+    z-index: 0;
+}

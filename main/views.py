@@ -16,6 +16,10 @@ import pandas as pd
 import openpyxl
 import os
 
+import json
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+
 # Create your views here.
 def main_index(request):
     return render(request, "mainpage.html")
@@ -38,8 +42,12 @@ def admin(request):
 def survey_complete(request):
     return render(request, 'survey_complete.html')
 
-def statistice_admin(request):
-    return render(request, 'statistics_admin.html', {'regions':regions})
+def statistics_admin_page(request):
+    # 지역 데이터 가져오기
+    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    
+    # GET 요청일 때 지역 데이터만 템플릿으로 전달
+    return render(request, 'statistics_admin_page.html', {'regions': regions})
 
 
 # 정보 선택
@@ -272,18 +280,28 @@ def school_statistics(request):
             
             print(f"{school_name}에 대한 전체 평균 : {average_total_response}")  # 디버깅
             
-        
-        return render(request, 'statistics_admin_temp.html', {
+        context = {
             'school_name': school_name,
             'responses': responses,
-            'average_response':average_response,
-            'average_section_response':average_section_response,
-            'average_total_response':average_total_response,
-            'regions': regions  # 지역 데이터 전달
-        })  
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response,
+            'regions': regions,
+        }
+        
+        # 템플릿을 렌더링하여 HTML로 반환합니다.
+        html = render_to_string('statistics_admin_content.html', context)
+        
+        return JsonResponse({
+            'html': html,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response
+        })
     
-    # GET 요청일 때 지역 데이터 전달
-    return render(request, 'statistics_admin.html', {'regions': regions})
+   # GET 요청일 때 지역 데이터만 템플릿으로 전달
+    return render(request, 'statistics_admin_page.html', {'regions': regions})
+
     
     
 

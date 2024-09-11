@@ -28,8 +28,9 @@ urlpatterns = [
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),
     
     #설문조사 결과 url
-    path('statistics-admin/', views.school_statistics, name='statistics_admin'), #전체 관리자 정보 선택 페이지
-    path('statistics-admin-temp/', views.school_statistics, name='statistics_admin_temp'), #전체 관리자 결과페이지
+    path('statistics-form/', views.school_statistics, name='statistics_form'), #전체 관리자 결과페이지
+    path('statistics-admin/eachSchool/', views.statistics_admin_page, name='statistics_admin_page'), #전체 관리자 정보 선택 페이지 (진짜찐최종)
+
 ]
 
 #미디어 파일 다운로드
