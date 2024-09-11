@@ -204,15 +204,17 @@ def handle_survey_response(request):
     return redirect('survey_complete')
 
 
-# 각 학교별 결과 통계 - 초등학교
+# 각 학교별 결과 통계 - 학생용 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
 def school_statistics(request):
     # 지역 데이터 가져오기
     regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
     
     if request.method == 'POST':
         school_name = request.POST.get('school_name')
+        school_level = request.POST.get('school_level')
         #role = request.POST.get('role') #학생 / 학부모 / 교원 통계 구분
         print(f"전달된 학교 이름: {school_name}")  # 디버깅: school_name이 제대로 전달되었는지 확인
+        print(f"전달된 학교급: {school_level}")  # 디버깅: school_level 값 확인
         #print(f"전달된 role: {role}")  # 디버깅: role이 제대로 전달되었는지 확인
 
         excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student.xlsx"
@@ -222,6 +224,7 @@ def school_statistics(request):
         row_to_static = None
         responses = []
         people_count = None
+        
         # 학교명이 있는 열을 찾아서 해당 행을 가져옴
         for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):  # 2번째 열에 학교명이 있음
             if str(row[0].value).strip() == str(school_name).strip():
@@ -230,11 +233,15 @@ def school_statistics(request):
                 break
             
         if row_to_static:
-            ### 1. 각 항목별 평균 구하기
+            ### 1. 각 항목별 평균 구하기 - 초중고 같이 해도 됨 (나중에 초등학교 일 경우만 responses 리스트에서 마지막 값 빼버리는거 구현하기)
             # 저장되어 있는 응답 값을 리스트에 불러오기 
             for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=5, max_col=26):
                 for value in cell:
                     responses.append(value.value or 0)
+                    
+            # 초등학교인 경우 responses 리스트의 마지막 값을 제거
+            if school_level == "초등학교":
+                responses.pop()  # 마지막 요소 제거
             
             # 응답 인원 불러오기
             for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=27, max_col=27):
@@ -244,7 +251,12 @@ def school_statistics(request):
             print(f"{school_name}에 대한 응답값 합산들 : {responses}") #디버깅
             print(f"{school_name}에 대한 응답인원 : {people_count}") #디버깅
             
-            average_response = [response / people_count for response in responses] #각 항목당 평균 구해둔 리스트
+            # people_count가 0이거나 None인 경우 처리
+            if people_count and people_count > 0:
+                average_response = [response / people_count for response in responses]  # 각 항목당 평균 구해둔 리스트
+            else:
+                average_response = [0 for response in responses]  # people_count가 0이면 모든 평균 값을 0으로 설정
+                
             print(f"{school_name}에 대한 평균 응답값들 : {average_response}")  # 디버깅
             
             
@@ -252,31 +264,47 @@ def school_statistics(request):
             question = 1
             section_response = [0, 0, 0]
             
-            for response in average_response:
-                if question <= 8:
-                    section_response[0] += response
-                elif question <= 14:
-                    section_response[1] += response
-                else:
-                    section_response[2] += response
-                    
-                question+=1
+            if school_level == "초등학교":
+                # 초등학교 영역별 합산 (1~8, 9~14, 15~21)
+                for response in average_response:
+                    if question <= 8:
+                        section_response[0] += response
+                    elif question <= 14:
+                        section_response[1] += response
+                    else:
+                        section_response[2] += response
+                        
+                    question+=1
             
-            average_section_response = []
-            average_section_response.append(round(section_response[0] / 8, 1))
-            average_section_response.append(round(section_response[1] / 6, 1))
-            average_section_response.append(round(section_response[2] / 7, 1))
+                average_section_response = [
+                        round(section_response[0] / 8, 1),
+                        round(section_response[1] / 6, 1),
+                        round(section_response[2] / 7, 1)
+                    ]
             
+            else:
+                # 중/고등학교 기준 영역별 합산 (1~8, 9~15, 16~22)
+                for response in average_response:
+                    if question <= 8:
+                        section_response[0] += response
+                    elif question <= 15:
+                        section_response[1] += response
+                    else:
+                        section_response[2] += response
+                    question += 1
+
+                average_section_response = [
+                    round(section_response[0] / 8, 1),
+                    round(section_response[1] / 7, 1),
+                    round(section_response[2] / 7, 1)
+                ]
+                
             print(f"{school_name}에 대한 영역별 합산 : {section_response}")  # 디버깅
             print(f"{school_name}에 대한 영역별 평균 : {average_section_response}")  # 디버깅    
             
             
             ### 3. 전체 평균 구하기
-            average_total_response = [0]
-            for response in average_section_response:
-                average_total_response[0] += response
-            
-            average_total_response[0] = round(average_total_response[0] / 3, 1)
+            average_total_response = [round(sum(average_section_response) / 3, 1)]
             
             print(f"{school_name}에 대한 전체 평균 : {average_total_response}")  # 디버깅
             
