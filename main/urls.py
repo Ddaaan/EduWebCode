@@ -28,8 +28,23 @@ urlpatterns = [
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),
     
     #설문조사 결과 url
-    path('statistics-form/', views.school_statistics, name='statistics_form'), #전체 관리자 결과페이지
-    path('statistics-admin/eachSchool/', views.statistics_admin_page, name='statistics_admin_page'), #전체 관리자 정보 선택 페이지 (진짜찐최종)
+    #학교별 통계
+    path('statistics-student-form/', views.school_student_statistics, name='statistics_student_form'),  # 학생용 통계 결과 페이지
+    path('statistics-parents-form/', views.school_parents_statistics, name='statistics_parents_form'),   # 학부모용 통계 결과 페이지
+    path('statistics-teacher-form/', views.school_teacher_statistics, name='statistics_teacher_form'),  # 교사용 통계 결과 페이지
+    path('statistics-admin/eachSchool/', views.statistics_admin_page, name='statistics_admin_page'), #전체 관리자 정보 선택 페이지 (최종)
+    
+    #지역별 통계
+    path('statistics-region-student-form/', views.region_student_statistics, name='statistics_region_student_form'),  # 학생용 통계 결과 페이지
+    path('statistics-region-parents-form/', views.region_parents_statistics, name='statistics_region_parents_form'),   # 학부모용 통계 결과 페이지
+    path('statistics-region-teacher-form/', views.region_teacher_statistics, name='statistics_region_teacher_form'),  # 교사용 통계 결과 페이지
+    path('statistics-admin/region/', views.statistics_admin_region_page, name='statistics_admin_region_page'), #지역별 통계 페이지 (최종)
+    
+    #학교급별 통계
+    path('statistics-total-student-form/', views.total_student_statistics, name='statistics_total_student_form'),  # 학생용 통계 결과 페이지
+    path('statistics-total-parents-form/', views.total_parents_statistics, name='statistics_total_parents_form'),   # 학부모용 통계 결과 페이지
+    path('statistics-total-teacher-form/', views.total_teacher_statistics, name='statistics_total_teacher_form'),  # 교사용 통계 결과 페이지
+    path('statistics-admin/total/', views.statistics_admin_total_page, name='statistics_admin_total_page'), #지역별 통계 페이지 (최종)
 
 ]
 

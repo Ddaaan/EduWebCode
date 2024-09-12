@@ -49,6 +49,20 @@ def statistics_admin_page(request):
     # GET 요청일 때 지역 데이터만 템플릿으로 전달
     return render(request, 'statistics_admin_page.html', {'regions': regions})
 
+def statistics_admin_region_page(request):
+    # 지역 데이터 가져오기
+    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    
+    # GET 요청일 때 지역 데이터만 템플릿으로 전달
+    return render(request, 'statistics_admin_region_page.html', {'regions': regions})
+
+def statistics_admin_total_page(request):
+    # 지역 데이터 가져오기
+    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    
+    # GET 요청일 때 지역 데이터만 템플릿으로 전달
+    return render(request, 'statistics_admin_total_page.html', {'regions': regions})
+
 
 # 정보 선택
 def info_page(request):
@@ -203,9 +217,9 @@ def handle_survey_response(request):
 
     return redirect('survey_complete')
 
-
+## 학생
 # 각 학교별 결과 통계 - 학생용 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
-def school_statistics(request):
+def school_student_statistics(request):
     # 지역 데이터 가져오기
     regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
     
@@ -330,7 +344,873 @@ def school_statistics(request):
    # GET 요청일 때 지역 데이터만 템플릿으로 전달
     return render(request, 'statistics_admin_page.html', {'regions': regions})
 
+## 학부모
+# 각 학교별 결과 통계 - 학부모 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
+def school_parents_statistics(request):
+    # 지역 데이터 가져오기
+    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
     
+    if request.method == 'POST':
+        school_name = request.POST.get('school_name')
+        school_level = request.POST.get('school_level')
+        #role = request.POST.get('role') #학생 / 학부모 / 교원 통계 구분
+        print(f"전달된 학교 이름: {school_name}")  # 디버깅: school_name이 제대로 전달되었는지 확인
+        print(f"전달된 학교급: {school_level}")  # 디버깅: school_level 값 확인
+        #print(f"전달된 role: {role}")  # 디버깅: role이 제대로 전달되었는지 확인
+
+        excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_parents.xlsx"
+        wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+        ws = wb.active
+
+        row_to_static = None
+        responses = []
+        people_count = None
+        
+        # 학교명이 있는 열을 찾아서 해당 행을 가져옴
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):  # 2번째 열에 학교명이 있음
+            if str(row[0].value).strip() == str(school_name).strip():
+                row_to_static= row[0].row
+                print(f"학교명 {school_name}가 {row_to_static}번째 행에 있습니다.")  # 디버깅
+                break
+            
+        if row_to_static:
+            ### 1. 각 항목별 평균 구하기 - 초중고 같이 해도 됨 (나중에 초등학교 일 경우만 responses 리스트에서 마지막 값 빼버리는거 구현하기)
+            # 저장되어 있는 응답 값을 리스트에 불러오기 
+            for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=5, max_col=27):
+                for value in cell:
+                    responses.append(value.value or 0)
+                    
+            # 초등학교인 경우 responses 리스트의 마지막 값을 제거
+            if school_level == "초등학교":
+                responses.pop()  # 마지막 요소 제거
+            
+            # 응답 인원 불러오기
+            for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=28, max_col=28):
+                for value in cell:
+                    people_count = value.value
+                
+            print(f"{school_name}에 대한 응답값 합산들 : {responses}") #디버깅
+            print(f"{school_name}에 대한 응답인원 : {people_count}") #디버깅
+            
+            # people_count가 0이거나 None인 경우 처리
+            if people_count and people_count > 0:
+                average_response = [response / people_count for response in responses]  # 각 항목당 평균 구해둔 리스트
+            else:
+                average_response = [0 for response in responses]  # people_count가 0이면 모든 평균 값을 0으로 설정
+                
+            print(f"{school_name}에 대한 평균 응답값들 : {average_response}")  # 디버깅
+            
+            
+            ### 2. 영역별 평균 구하기
+            question = 1
+            section_response = [0, 0, 0]
+            
+            # (초중고유 설문지 영역 같음)영역별 합산 (1~10, 11~16, 17~23)
+            for response in average_response:
+                if question <= 10:
+                    section_response[0] += response
+                elif question <= 16:
+                    section_response[1] += response
+                else:
+                    section_response[2] += response
+                    
+                question+=1
+        
+            average_section_response = [
+                    round(section_response[0] / 10, 1),
+                    round(section_response[1] / 6, 1),
+                    round(section_response[2] / 7, 1)
+                ]
+                
+            print(f"{school_name}에 대한 영역별 합산 : {section_response}")  # 디버깅
+            print(f"{school_name}에 대한 영역별 평균 : {average_section_response}")  # 디버깅    
+            
+            
+            ### 3. 전체 평균 구하기
+            average_total_response = [round(sum(average_section_response) / 3, 1)]
+            
+            print(f"{school_name}에 대한 전체 평균 : {average_total_response}")  # 디버깅
+            
+        context = {
+            'school_name': school_name,
+            'responses': responses,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response,
+            'regions': regions,
+        }
+        
+        # 템플릿을 렌더링하여 HTML로 반환합니다.
+        html = render_to_string('statistics_admin_content.html', context)
+        
+        return JsonResponse({
+            'html': html,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response
+        })
+    
+   # GET 요청일 때 지역 데이터만 템플릿으로 전달
+    return render(request, 'statistics_admin_page.html', {'regions': regions})
+
+
+
+## 교원
+# 각 학교별 결과 통계 - 학부모 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
+def school_teacher_statistics(request):
+    # 지역 데이터 가져오기
+    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    
+    if request.method == 'POST':
+        school_name = request.POST.get('school_name')
+        school_level = request.POST.get('school_level')
+        #role = request.POST.get('role') #학생 / 학부모 / 교원 통계 구분
+        print(f"전달된 학교 이름: {school_name}")  # 디버깅: school_name이 제대로 전달되었는지 확인
+        print(f"전달된 학교급: {school_level}")  # 디버깅: school_level 값 확인
+        #print(f"전달된 role: {role}")  # 디버깅: role이 제대로 전달되었는지 확인
+
+        excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_teacher.xlsx"
+        wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+        ws = wb.active
+
+        row_to_static = None
+        responses = []
+        people_count = None
+        
+        # 학교명이 있는 열을 찾아서 해당 행을 가져옴
+        for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):  # 2번째 열에 학교명이 있음
+            if str(row[0].value).strip() == str(school_name).strip():
+                row_to_static= row[0].row
+                print(f"학교명 {school_name}가 {row_to_static}번째 행에 있습니다.")  # 디버깅
+                break
+            
+        if row_to_static:
+            ### 1. 각 항목별 평균 구하기 - 초중고 같이 해도 됨 (나중에 초등학교 일 경우만 responses 리스트에서 마지막 값 빼버리는거 구현하기)
+            # 저장되어 있는 응답 값을 리스트에 불러오기 
+            for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=5, max_col=29):
+                for value in cell:
+                    responses.append(value.value or 0)
+                    
+            # 초등학교인 경우 responses 리스트의 마지막 값을 제거
+            if school_level == "초등학교":
+                responses.pop()  # 마지막 요소 제거
+            
+            # 응답 인원 불러오기
+            for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=30, max_col=30):
+                for value in cell:
+                    people_count = value.value
+                
+            print(f"{school_name}에 대한 응답값 합산들 : {responses}") #디버깅
+            print(f"{school_name}에 대한 응답인원 : {people_count}") #디버깅
+            
+            # people_count가 0이거나 None인 경우 처리
+            if people_count and people_count > 0:
+                average_response = [response / people_count for response in responses]  # 각 항목당 평균 구해둔 리스트
+            else:
+                average_response = [0 for response in responses]  # people_count가 0이면 모든 평균 값을 0으로 설정
+                
+            print(f"{school_name}에 대한 평균 응답값들 : {average_response}")  # 디버깅
+            
+            
+            ### 2. 영역별 평균 구하기
+            question = 1
+            section_response = [0, 0, 0]
+            
+            # (초중고유 설문지 영역 같음)영역별 합산 (1~10, 11~17, 18~25)
+            for response in average_response:
+                if question <= 10:
+                    section_response[0] += response
+                elif question <= 17:
+                    section_response[1] += response
+                else:
+                    section_response[2] += response
+                    
+                question+=1
+        
+            average_section_response = [
+                    round(section_response[0] / 10, 1),
+                    round(section_response[1] / 7, 1),
+                    round(section_response[2] / 8, 1)
+                ]
+                
+            print(f"{school_name}에 대한 영역별 합산 : {section_response}")  # 디버깅
+            print(f"{school_name}에 대한 영역별 평균 : {average_section_response}")  # 디버깅    
+            
+            
+            ### 3. 전체 평균 구하기
+            average_total_response = [round(sum(average_section_response) / 3, 1)]
+            
+            print(f"{school_name}에 대한 전체 평균 : {average_total_response}")  # 디버깅
+            
+        context = {
+            'school_name': school_name,
+            'responses': responses,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response,
+            'regions': regions,
+        }
+        
+        # 템플릿을 렌더링하여 HTML로 반환합니다.
+        html = render_to_string('statistics_admin_content.html', context)
+        
+        return JsonResponse({
+            'html': html,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response
+        })
+    
+   # GET 요청일 때 지역 데이터만 템플릿으로 전달
+    return render(request, 'statistics_admin_page.html', {'regions': regions})
+
+
+########################################지역별 평균###################################################################
+
+# 지역별 평균 - 학생용 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
+def region_student_statistics(request):
+    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+
+    if request.method == 'POST':
+        region = request.POST.get('region')
+        school_level = request.POST.get('school_level')
+        
+        print(f"전달된 지역: {region}")  # 디버깅: 지역 확인
+        print(f"전달된 학교급: {school_level}")  # 디버깅: 학교급 확인
+
+        # 선택된 지역과 학교급에 맞는 학교들 조회
+        schools_in_region = School.objects.filter(district=region, school_level=school_level)
+        
+        total_responses = []
+        total_people_count = 0
+    
+        for school in schools_in_region:
+            # 각 학교별로 데이터를 엑셀에서 가져오는 방식
+            excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student.xlsx"
+            wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+            ws = wb.active
+
+            row_to_static = None
+            responses = []
+            people_count = None
+            
+            # 학교명이 있는 열을 찾아서 해당 행을 가져옴
+            for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):
+                if str(row[0].value).strip() == str(school.school_name).strip():
+                    row_to_static = row[0].row
+                    break
+            
+            if row_to_static:
+                # 응답 값과 응답 인원 합산
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=5, max_col=26):
+                    for value in cell:
+                        responses.append(value.value or 0)
+                
+                # 응답 인원 불러오기
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=27, max_col=27):
+                    for value in cell:
+                        people_count = value.value
+                
+                # 지역 전체 응답 합산
+                total_responses.append(responses)
+                total_people_count += people_count
+                
+            # 지역 전체 응답 합산 후 average_response 계산
+            if total_people_count > 0 and total_responses:  # 응답이 있는 경우에만 계산
+                combined_responses = [sum(x) for x in zip(*total_responses)]  # 문항별 응답 합산
+                average_response = [response / total_people_count for response in combined_responses]  # 평균 구하기
+            else:
+                combined_responses = []  # 응답이 없을 경우 빈 리스트 할당
+                average_response = []  # 응답이 없을 경우 빈 리스트 할당
+    
+        
+        # 영역별 통계 계산 (초등, 중등, 고등의 경우를 나눠서)
+        section_response = [0, 0, 0]
+        question = 1
+        
+        if school_level == '초등학교':
+            for response in average_response:
+                if question <= 8:
+                    section_response[0] += response
+                elif question <= 14:
+                    section_response[1] += response
+                else:
+                    section_response[2] += response
+                question += 1
+            average_section_response = [round(section_response[0] / 8, 1), round(section_response[1] / 6, 1), round(section_response[2] / 7, 1)]
+        
+        else:
+            for response in average_response:
+                if question <= 8:
+                    section_response[0] += response
+                elif question <= 15:
+                    section_response[1] += response
+                else:
+                    section_response[2] += response
+                question += 1
+            average_section_response = [round(section_response[0] / 8, 1), round(section_response[1] / 7, 1), round(section_response[2] / 7, 1)]
+        
+        average_total_response = [round(sum(average_section_response) / 3, 1)]
+        
+        context = {
+            'region': region,
+            'school_level': school_level,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response,
+            'regions': regions,
+        }
+        
+        html = render_to_string('statistics_admin_content.html', context)
+        
+        return JsonResponse({
+            'html': html,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response
+        })
+    
+    return render(request, 'statistics_admin_region_page.html', {'regions': regions})
+
+
+## 학부모
+# 지역별 평균 - 학부모 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
+def region_parents_statistics(request):
+    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+
+    if request.method == 'POST':
+        region = request.POST.get('region')
+        school_level = request.POST.get('school_level')
+        
+        print(f"전달된 지역: {region}")  # 디버깅: 지역 확인
+        print(f"전달된 학교급: {school_level}")  # 디버깅: 학교급 확인
+
+        # 선택된 지역과 학교급에 맞는 학교들 조회
+        schools_in_region = School.objects.filter(district=region, school_level=school_level)
+        
+        total_responses = []
+        total_people_count = 0
+    
+        for school in schools_in_region:
+            # 각 학교별로 데이터를 엑셀에서 가져오는 방식
+            excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_parents.xlsx"
+            wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+            ws = wb.active
+
+            row_to_static = None
+            responses = []
+            people_count = None
+            
+            # 학교명이 있는 열을 찾아서 해당 행을 가져옴
+            for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):
+                if str(row[0].value).strip() == str(school.school_name).strip():
+                    row_to_static = row[0].row
+                    break
+            
+            if row_to_static:
+                # 응답 값과 응답 인원 합산
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=5, max_col=27):
+                    for value in cell:
+                        responses.append(value.value or 0)
+                
+                # 응답 인원 불러오기
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=28, max_col=28):
+                    for value in cell:
+                        people_count = value.value
+                
+                # 지역 전체 응답 합산
+                total_responses.append(responses)
+                total_people_count += people_count
+            
+            ### 1. 항목별 평균 구하기
+            # 지역 전체 응답 합산 후 average_response 계산
+            if total_people_count > 0 and total_responses:  # 응답이 있는 경우에만 계산
+                combined_responses = [sum(x) for x in zip(*total_responses)]  # 문항별 응답 합산
+                average_response = [response / total_people_count for response in combined_responses]  # 평균 구하기
+            else:
+                combined_responses = []  # 응답이 없을 경우 빈 리스트 할당
+                average_response = []  # 응답이 없을 경우 빈 리스트 할당
+    
+        
+        ### 2. 영역별 평균 구하기
+        # 영역별 통계 계산 (초등, 중등, 고등의 경우를 나눠서)
+        section_response = [0, 0, 0]
+        question = 1
+        
+        # (초중고유 설문지 영역 같음)영역별 합산 (1~10, 11~16, 17~23)
+        for response in average_response:
+            if question <= 10:
+                section_response[0] += response
+            elif question <= 16:
+                section_response[1] += response
+            else:
+                section_response[2] += response
+            question += 1
+        average_section_response = [
+            round(section_response[0] / 10, 1), 
+            round(section_response[1] / 6, 1), 
+            round(section_response[2] / 7, 1)
+        ]
+        
+        ### 3. 전체 평균 구하기
+        average_total_response = [round(sum(average_section_response) / 3, 1)]
+        
+        context = {
+            'region': region,
+            'school_level': school_level,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response,
+            'regions': regions,
+        }
+        
+        html = render_to_string('statistics_admin_content.html', context)
+        
+        return JsonResponse({
+            'html': html,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response
+        })
+    
+    return render(request, 'statistics_admin_region_page.html', {'regions': regions})
+
+
+## 교원
+# 지역별 평균 - 교직원 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
+def region_teacher_statistics(request):
+    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+
+    if request.method == 'POST':
+        region = request.POST.get('region')
+        school_level = request.POST.get('school_level')
+        
+        print(f"전달된 지역: {region}")  # 디버깅: 지역 확인
+        print(f"전달된 학교급: {school_level}")  # 디버깅: 학교급 확인
+
+        # 선택된 지역과 학교급에 맞는 학교들 조회
+        schools_in_region = School.objects.filter(district=region, school_level=school_level)
+        
+        total_responses = []
+        total_people_count = 0
+    
+        for school in schools_in_region:
+            # 각 학교별로 데이터를 엑셀에서 가져오는 방식
+            excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_teacher.xlsx"
+            wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+            ws = wb.active
+
+            row_to_static = None
+            responses = []
+            people_count = None
+            
+            # 학교명이 있는 열을 찾아서 해당 행을 가져옴
+            for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):
+                if str(row[0].value).strip() == str(school.school_name).strip():
+                    row_to_static = row[0].row
+                    break
+            
+            if row_to_static:
+                # 응답 값과 응답 인원 합산
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=5, max_col=29):
+                    for value in cell:
+                        responses.append(value.value or 0)
+                
+                # 응답 인원 불러오기
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=30, max_col=30):
+                    for value in cell:
+                        people_count = value.value
+                
+                # 지역 전체 응답 합산
+                total_responses.append(responses)
+                total_people_count += people_count
+            
+            ### 1. 항목별 평균 구하기
+            # 지역 전체 응답 합산 후 average_response 계산
+            if total_people_count > 0 and total_responses:  # 응답이 있는 경우에만 계산
+                combined_responses = [sum(x) for x in zip(*total_responses)]  # 문항별 응답 합산
+                average_response = [response / total_people_count for response in combined_responses]  # 평균 구하기
+            else:
+                combined_responses = []  # 응답이 없을 경우 빈 리스트 할당
+                average_response = []  # 응답이 없을 경우 빈 리스트 할당
+    
+        
+        ### 2. 영역별 평균 구하기
+        section_response = [0, 0, 0]
+        question = 1
+        
+        # (초중고유 설문지 영역 같음)영역별 합산 (1~10, 11~17, 18~25)
+        for response in average_response:
+            if question <= 10:
+                section_response[0] += response
+            elif question <= 16:
+                section_response[1] += response
+            else:
+                section_response[2] += response
+            question += 1
+        average_section_response = [
+            round(section_response[0] / 10, 1), 
+            round(section_response[1] / 7, 1), 
+            round(section_response[2] / 8, 1)
+        ]
+        
+        ### 3. 전체 평균 구하기
+        average_total_response = [round(sum(average_section_response) / 3, 1)]
+        
+        context = {
+            'region': region,
+            'school_level': school_level,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response,
+            'regions': regions,
+        }
+        
+        html = render_to_string('statistics_admin_content.html', context)
+        
+        return JsonResponse({
+            'html': html,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response
+        })
+    
+    return render(request, 'statistics_admin_region_page.html', {'regions': regions})
+
+########################################학교급별 평균###################################################################
+
+## 학생
+# 전체 통계 - 학생용 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
+def total_student_statistics(request):
+    school_levels = ['초등학교', '중학교', '고등학교']  # 각 학교급 정의
+
+    if request.method == 'POST':
+        school_level = request.POST.get('school_level')  # 선택된 학교급
+        print(f"전달된 학교급: {school_level}")  # 디버깅
+
+        # 선택된 학교급에 맞는 학교들 조회 - SQL에서 실행됨
+        schools_in_level = School.objects.filter(school_level=school_level)
+        
+        total_responses = []  # 응답 합산을 위한 초기화
+        total_people_count = 0
+    
+        for school in schools_in_level:
+            print(f"탐색하고 있는 학교: {school}")  # 디버깅
+            # 각 학교별로 데이터를 엑셀에서 가져오는 방식
+            excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student.xlsx"
+            wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+            ws = wb.active
+
+            row_to_static = None
+            responses = []
+            people_count = None
+            
+            
+            # 학교명이 있는 열을 찾아서 해당 행을 가져옴
+            for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):
+                if str(row[0].value).strip() == str(school.school_name).strip():
+                    row_to_static = row[0].row
+                    break
+            
+            if row_to_static:
+                # 응답 값
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=5, max_col=26):
+                    for value in cell:
+                        responses.append(value.value or 0)
+                        
+                print(f"응답값: {responses}")  # 디버깅
+                
+                # 응답 인원 불러오기
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=27, max_col=27):
+                    for value in cell:
+                        people_count = value.value
+                        
+                print(f"응답인원: {people_count}")  # 디버깅
+                
+                # 지역 전체 응답 합산 (total_responses에 각 school's 응답을 더함)
+                if not total_responses:
+                    total_responses = responses  # 첫 번째 학교의 응답값으로 초기화
+                else:
+                    total_responses = [x + y for x, y in zip(total_responses, responses)]  # 같은 인덱스끼리 더함
+                
+                # 전체 응답자 수 더함
+                total_people_count += people_count
+                
+                print(f"응답값합산: {total_responses}")  # 디버깅
+                print(f"사람수 합산: {total_people_count}")  # 디버깅
+                
+        
+        # 학교 전체 응답 합산 후 average_response 계산
+        if total_people_count > 0 and total_responses:  # 응답이 있는 경우에만 계산
+            average_response = [response / total_people_count for response in total_responses]  # 평균 구하기
+        else:
+            combined_responses = []
+            average_response = []
+        
+        # 영역별 통계 계산
+        section_response = [0, 0, 0]
+        question = 1
+
+        if school_level == '초등학교':
+            for response in average_response:
+                if question <= 8:
+                    section_response[0] += response
+                elif question <= 14:
+                    section_response[1] += response
+                else:
+                    section_response[2] += response
+                question += 1
+            average_section_response = [round(section_response[0] / 8, 1), round(section_response[1] / 6, 1), round(section_response[2] / 7, 1)]
+
+        else:  # 중학교, 고등학교
+            for response in average_response:
+                if question <= 8:
+                    section_response[0] += response
+                elif question <= 15:
+                    section_response[1] += response
+                else:
+                    section_response[2] += response
+                question += 1
+            average_section_response = [round(section_response[0] / 8, 1), round(section_response[1] / 7, 1), round(section_response[2] / 7, 1)]
+
+        average_total_response = [round(sum(average_section_response) / 3, 1)]
+        
+        context = {
+            'school_level': school_level,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response,
+        }
+        
+        html = render_to_string('statistics_total_content.html', context)
+        
+        return JsonResponse({
+            'html': html,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response
+        })
+    
+    return render(request, 'statistics_admin_total_page.html', {'school_levels': school_levels})
+
+
+## 학부모
+# 전체 통계 - 학부모용 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
+def total_parents_statistics(request):
+    school_levels = ['초등학교', '중학교', '고등학교']  # 각 학교급 정의
+
+    if request.method == 'POST':
+        school_level = request.POST.get('school_level')  # 선택된 학교급
+        print(f"전달된 학교급: {school_level}")  # 디버깅
+
+        # 선택된 학교급에 맞는 학교들 조회 - SQL에서 실행됨
+        schools_in_level = School.objects.filter(school_level=school_level)
+        
+        total_responses = []  # 응답 합산을 위한 초기화
+        total_people_count = 0
+    
+        for school in schools_in_level:
+            print(f"탐색하고 있는 학교: {school}")  # 디버깅
+            # 각 학교별로 데이터를 엑셀에서 가져오는 방식
+            excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_parents.xlsx"
+            wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+            ws = wb.active
+
+            row_to_static = None
+            responses = []
+            people_count = None
+            
+            
+            # 학교명이 있는 열을 찾아서 해당 행을 가져옴
+            for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):
+                if str(row[0].value).strip() == str(school.school_name).strip():
+                    row_to_static = row[0].row
+                    break
+            
+            if row_to_static:
+                # 응답 값
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=5, max_col=27):
+                    for value in cell:
+                        responses.append(value.value or 0)
+                        
+                print(f"응답값: {responses}")  # 디버깅
+                
+                # 응답 인원 불러오기
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=28, max_col=28):
+                    for value in cell:
+                        people_count = value.value
+                        
+                print(f"응답인원: {people_count}")  # 디버깅
+                
+                # 지역 전체 응답 합산 (total_responses에 각 school 응답을 더함)
+                if not total_responses:
+                    total_responses = responses  # 첫 번째 학교의 응답값으로 초기화
+                else:
+                    total_responses = [x + y for x, y in zip(total_responses, responses)]  # 같은 인덱스끼리 더함
+                
+                # 전체 응답자 수 더함
+                total_people_count += people_count
+                
+                print(f"응답값합산: {total_responses}")  # 디버깅
+                print(f"사람수 합산: {total_people_count}")  # 디버깅
+                
+        ### 1. 항목별 평균 구하기
+        # 학교 전체 응답 합산 후 average_response 계산
+        if total_people_count > 0 and total_responses:  # 응답이 있는 경우에만 계산
+            average_response = [response / total_people_count for response in total_responses]  # 평균 구하기
+        else:
+            combined_responses = []
+            average_response = []
+        
+        ### 2. 영역별 평균 구하기
+        # 영역별 통계 계산
+        section_response = [0, 0, 0]
+        question = 1
+
+        # (초중고유 설문지 영역 같음)영역별 합산 (1~10, 11~16, 17~23)
+        for response in average_response:
+            if question <= 10:
+                section_response[0] += response
+            elif question <= 16:
+                section_response[1] += response
+            else:
+                section_response[2] += response
+            question += 1
+        average_section_response = [
+            round(section_response[0] / 10, 1), 
+            round(section_response[1] / 6, 1), 
+            round(section_response[2] / 7, 1)
+        ]
+
+        ### 3. 전체 평균 구하기
+        average_total_response = [round(sum(average_section_response) / 3, 1)]
+        
+        context = {
+            'school_level': school_level,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response,
+        }
+        
+        html = render_to_string('statistics_total_content.html', context)
+        
+        return JsonResponse({
+            'html': html,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response
+        })
+    
+    return render(request, 'statistics_admin_total_page.html', {'school_levels': school_levels})
+
+## 교원
+# 전체 통계 - 교직원용 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
+def total_teacher_statistics(request):
+    school_levels = ['초등학교', '중학교', '고등학교']  # 각 학교급 정의
+
+    if request.method == 'POST':
+        school_level = request.POST.get('school_level')  # 선택된 학교급
+        print(f"전달된 학교급: {school_level}")  # 디버깅
+
+        # 선택된 학교급에 맞는 학교들 조회 - SQL에서 실행됨
+        schools_in_level = School.objects.filter(school_level=school_level)
+        
+        total_responses = []  # 응답 합산을 위한 초기화
+        total_people_count = 0
+    
+        for school in schools_in_level:
+            print(f"탐색하고 있는 학교: {school}")  # 디버깅
+            # 각 학교별로 데이터를 엑셀에서 가져오는 방식
+            excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_teacher.xlsx"
+            wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+            ws = wb.active
+
+            row_to_static = None
+            responses = []
+            people_count = None
+            
+            
+            # 학교명이 있는 열을 찾아서 해당 행을 가져옴
+            for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=2, max_col=2):
+                if str(row[0].value).strip() == str(school.school_name).strip():
+                    row_to_static = row[0].row
+                    break
+            
+            if row_to_static:
+                # 응답 값
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=5, max_col=29):
+                    for value in cell:
+                        responses.append(value.value or 0)
+                        
+                print(f"응답값: {responses}")  # 디버깅
+                
+                # 응답 인원 불러오기
+                for cell in ws.iter_cols(min_row=row_to_static, max_row=row_to_static, min_col=30, max_col=30):
+                    for value in cell:
+                        people_count = value.value
+                        
+                print(f"응답인원: {people_count}")  # 디버깅
+                
+                # 지역 전체 응답 합산 (total_responses에 각 school 응답을 더함)
+                if not total_responses:
+                    total_responses = responses  # 첫 번째 학교의 응답값으로 초기화
+                else:
+                    total_responses = [x + y for x, y in zip(total_responses, responses)]  # 같은 인덱스끼리 더함
+                
+                # 전체 응답자 수 더함
+                total_people_count += people_count
+                
+                print(f"응답값합산: {total_responses}")  # 디버깅
+                print(f"사람수 합산: {total_people_count}")  # 디버깅
+                
+        ### 1. 항목별 평균 구하기
+        # 학교 전체 응답 합산 후 average_response 계산
+        if total_people_count > 0 and total_responses:  # 응답이 있는 경우에만 계산
+            average_response = [response / total_people_count for response in total_responses]  # 평균 구하기
+        else:
+            combined_responses = []
+            average_response = []
+        
+        ### 2. 영역별 평균 구하기
+        # 영역별 통계 계산
+        section_response = [0, 0, 0]
+        question = 1
+
+        # (초중고유 설문지 영역 같음)영역별 합산 (1~10, 11~17, 18~25)
+        for response in average_response:
+            if question <= 10:
+                section_response[0] += response
+            elif question <= 16:
+                section_response[1] += response
+            else:
+                section_response[2] += response
+            question += 1
+        average_section_response = [
+            round(section_response[0] / 10, 1), 
+            round(section_response[1] / 7, 1), 
+            round(section_response[2] / 8, 1)
+        ]
+        
+        ### 3. 전체 평균 구하기
+        average_total_response = [round(sum(average_section_response) / 3, 1)]
+        
+        context = {
+            'school_level': school_level,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response,
+        }
+        
+        html = render_to_string('statistics_total_content.html', context)
+        
+        return JsonResponse({
+            'html': html,
+            'average_response': average_response,
+            'average_section_response': average_section_response,
+            'average_total_response': average_total_response
+        })
+    
+    return render(request, 'statistics_admin_total_page.html', {'school_levels': school_levels})
     
 
 

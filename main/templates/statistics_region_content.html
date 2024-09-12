@@ -4,7 +4,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <h1>응답합 출력</h1>
 <ul>
-    {% for response in responses %}
+    {% for response in combined_responses %}
         <li>문항 {{ forloop.counter }}: {{ response }}</li>
     {% endfor %}
 </ul>

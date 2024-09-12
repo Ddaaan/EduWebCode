@@ -72,8 +72,8 @@
             </select>
             <br><br>
 
-            <label for="school-level">학교급</label>
-            <select id="school-level" name="school-level" onchange="updateSchoolNames()">
+            <label for="school_level">학교급</label>
+            <select id="school_level" name="school_level" onchange="updateSchoolNames()">
                 <option value="">학교급을 선택하세요</option>
                 <option value="유치원">유치원</option>
                 <option value="초등학교">초등학교</option>
@@ -86,14 +86,8 @@
             </select>
             <br><br>
 
-            <label for="school_name">학교명</label>
-            <select id="school_name" name="school_name">
-                <option value="">먼저 지역과 학교급을 선택하세요</option>
-            </select>
-            <br><br>
-
-            <input type="hidden" name="school_name_hidden" value="{{ school_name }}">
             <input type="hidden" name="school_level_hidden" value="{{ school_level }}">
+            <input type="hidden" name="region_hidden" value="{{ region }}">
             <input type="hidden" name="role_hidden" value="{{ role }}">
             <button type="button" onclick="loadStatistics()">조회</button>
         </form>
@@ -150,11 +144,11 @@
 
         // role 값에 따라 다른 URL로 AJAX 요청을 보냄
         if (role === 'student') {
-            url = "{% url 'statistics_student_form' %}"; // 학생용 통계 URL
+            url = "{% url 'statistics_region_student_form' %}"; // 학생용 통계 URL
         } else if (role === 'parents') {
-            url = "{% url 'statistics_parents_form' %}"; // 학부모용 통계 URL
+            url = "{% url 'statistics_region_parents_form' %}"; // 학부모용 통계 URL
         } else if (role === 'teacher') {
-            url = "{% url 'statistics_teacher_form' %}"; // 교사용 통계 URL
+            url = "{% url 'statistics_region_teacher_form' %}"; // 교사용 통계 URL
         } else {
             alert('역할을 선택하세요.');
             return; // 역할이 선택되지 않으면 함수 종료
