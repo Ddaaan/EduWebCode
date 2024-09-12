@@ -27,21 +27,57 @@
 </header>
 
 <div class="survey-container">
-    <form method="POST">
+    <form method="POST" action="{%  url 'handle_survey_response' %}">
         <h2>초등학생용 설문조사</h2>
         {% csrf_token %}
-        {% for question in questions %}
+        <input type="hidden" name="school_id" value="{{ school_id }}">
+        <h1>{{school_id}}</h1>
+
+        <!-- 학교문화 관련 질문 -->
+        <h3>학교문화 관련</h3>
+        {% for question in school_culture %}
             <div class="question">
                 <h4>{{ forloop.counter }}. {{ question.text }}</h4>
                 <div class="options">
                     {% for option in options %}
                         <label class="option-label">
-                            <input type="radio" name="question{{ question.id }}" value="{{ option }}"> {{ option }}
+                            <input type="radio" name="question{{ question.id }}" value="{{ forloop.counter }}"> {{ option }}
                         </label>
                     {% endfor %}
                 </div>
             </div>
         {% endfor %}
+
+        <!-- 학교구조 관련 질문 -->
+        <h3>학교구조 관련</h3>
+        {% for question in school_structure %}
+            <div class="question">
+                <h4>{{ forloop.counter }}. {{ question.text }}</h4>
+                <div class="options">
+                    {% for option in options %}
+                        <label class="option-label">
+                            <input type="radio" name="question{{ question.id }}" value="{{ forloop.counter }}"> {{ option }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <!-- 민주시민교육 실천 관련 질문 -->
+        <h3>민주시민교육 실천</h3>
+        {% for question in democratic_citizenship %}
+            <div class="question">
+                <h4>{{ forloop.counter }}. {{ question.text }}</h4>
+                <div class="options">
+                    {% for option in options %}
+                        <label class="option-label">
+                            <input type="radio" name="question{{ question.id }}" value="{{ forloop.counter }}"> {{ option }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
         <button type="submit" class="submit-btn">제출</button>
     </form>
 </div>

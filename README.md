@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # eduWeb
 Survey-Web
 <hr>
@@ -26,3 +27,5 @@ Survey-Web
 - 학교별 평균 조회 폼 js 사용해서 동적으로 만듦 : 페이지 하나로 합침(조회 페이지 + 그래프 페이지)
 - 응답 인원이 0일 경우 divide zero 해결
 - 학교별 통계 ver.학생 초/중/고 나눠서 평균 냄
+=======
+>>>>>>> statistics-analysis

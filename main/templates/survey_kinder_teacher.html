@@ -30,7 +30,10 @@
     <form method="POST">
         <h2>유치원 교원용 설문조사</h2>
         {% csrf_token %}
-        {% for question in questions %}
+
+        <!-- 학교문화 관련 질문 -->
+        <h3>학교문화 관련</h3>
+        {% for question in school_culture %}
             <div class="question">
                 <h4>{{ forloop.counter }}. {{ question.text }}</h4>
                 <div class="options">
@@ -42,6 +45,37 @@
                 </div>
             </div>
         {% endfor %}
+
+        <!-- 학교구조 관련 질문 -->
+        <h3>학교구조 관련</h3>
+        {% for question in school_structure %}
+            <div class="question">
+                <h4>{{ forloop.counter }}. {{ question.text }}</h4>
+                <div class="options">
+                    {% for option in options %}
+                        <label class="option-label">
+                            <input type="radio" name="question{{ question.id }}" value="{{ option }}"> {{ option }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <!-- 민주시민교육 실천 관련 질문 -->
+        <h3>민주시민교육 실천</h3>
+        {% for question in democratic_citizenship %}
+            <div class="question">
+                <h4>{{ forloop.counter }}. {{ question.text }}</h4>
+                <div class="options">
+                    {% for option in options %}
+                        <label class="option-label">
+                            <input type="radio" name="question{{ question.id }}" value="{{ option }}"> {{ option }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
         <button type="submit" class="submit-btn">제출</button>
     </form>
 </div>
