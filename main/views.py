@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from main.models import School
 from .models import Post, PostView
 from django.utils import timezone
+from .forms import LoginForm
 
 import pandas as pd
 import openpyxl
@@ -36,9 +37,6 @@ def about2(request):
 def file(request):
     return render(request, 'file.html')
 
-def admin(request):
-    return render(request, 'admin.html')
-
 def survey_complete(request):
     return render(request, 'survey_complete.html')
 
@@ -63,6 +61,54 @@ def statistics_admin_total_page(request):
     # GET 요청일 때 지역 데이터만 템플릿으로 전달
     return render(request, 'statistics_admin_total_page.html', {'regions': regions})
 
+# 관리자 로그인
+def admin_login(request):
+    # 이미 로그인이 되어있는지 세션을 확인
+    if request.session.get('school_name'):
+        return redirect('admin_dashboard')  # 대시보드 페이지로 이동 (대시보드 URL name을 수정하세요)
+    
+    form = LoginForm(request.POST or None)
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            school_id = form.cleaned_data.get('school_id')
+            school_pw = form.cleaned_data.get('school_pw')
+            
+            try:
+                #아이디와 비번 확인
+                school = School.objects.get(school_id = school_id)
+                
+                #비번 일치 확인
+                if school.school_pw == school_pw:
+                    request.session['school_id'] = school.school_id
+                    request.session['school_name'] = school.school_name  # 이 부분에서 school_name이 저장됨
+                    return redirect ('admin_dashboard') # --> 로그인 완료 후 이동할 페이지
+                
+                else:
+                    messages.error(request, '비밀번호가 일치하지 않습니다.')
+                    
+            except School.DoesNotExist:
+                messages.error(request, '존재하지 않는 아이디입니다.')
+        
+    return render(request, 'admin_login.html', {'form':form})
+
+# 관리자 대시보드 (로그인 상태 확인)
+def admin_dashboard(request):
+    school_id = request.session.get('school_id')
+    school_name = request.session.get('school_name')
+    
+    if not school_id:
+        messages.error(request, '로그인 해주세요.')
+        return redirect('admin_login')
+    
+    return render(request, 'admin_dashboard.html', {'school_name': school_name})
+
+
+# 로그아웃
+def admin_logout(request):
+    request.session.flush()  # 세션 데이터를 모두 삭제
+    messages.success(request, '로그아웃 되었습니다.')
+    return redirect('admin_login')
 
 # 정보 선택
 def info_page(request):
