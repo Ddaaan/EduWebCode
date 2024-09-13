@@ -1,0 +1,76 @@
+/* 로그인 폼 스타일 */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 200px); /* 상단과 하단을 제외한 높이 */
+}
+
+.login-form {
+    background-color: #f9f9f9; /* 배경색 */
+    padding: 30px 40px; /* 패딩 */
+    border-radius: 8px; /* 둥근 모서리 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 */
+    width: 400px; /* 폼 너비 */
+}
+
+.login-form h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.login-form label {
+    font-size: 16px;
+    color: #333;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.login-form button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background-color: #0056b3;
+}
+
+ul {
+    padding-left: 0;
+}
+
+ul li {
+    list-style-type: none;
+    color: red;
+    margin-bottom: 10px;
+}
+
+/* 메시지 스타일 */
+ul.messages {
+    margin-top: 20px;
+    color: red;
+}
+
+ul.messages li {
+    list-style: none;
+    font-size: 16px;
+}

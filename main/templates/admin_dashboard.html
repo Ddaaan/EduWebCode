@@ -5,8 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <title>전라남도교육청 : 학교민주주의 지수</title>
+    <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'main/css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/login_form.css' %}">
 </head>
 
 <body>
@@ -19,13 +20,27 @@
                 <li class=""><a href="/jns/about2">학교민주주의 지수 안내</a></li>
                 <li class=""><a href="/jns/post">공지사항</a></li>
                 <li class=""><a href="/jns/file">자료실</a></li>
-                <li class=""><a href="/jns/admin">학교관리자</a></li>
+                <li class=""><a href="/jns/admin-login">학교관리자</a></li>
             </ul>
         </nav>
         <img src="/static/main/images/sta04.png" alt="전남교육 아이좋아 로고" class="sta04">
     </section>
 </header>
 
+
+<h2>{{ school_name }} 관리자 계정입니다</h2>
+
+<nav>
+    <ul>
+        <li><a href="{% url 'statistics_admin_page' %}">통계관리</a></li>
+    </ul>
+</nav>
+
+<nav>
+    <ul>
+        <li><a href="{% url 'admin_logout' %}">로그아웃</a></li>
+    </ul>
+</nav>
 
 <footer id="footer">
     <section class="footer">
