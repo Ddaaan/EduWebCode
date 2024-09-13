@@ -35,7 +35,10 @@
 <div class="sidebar">
     <a href="/jns/statistics-admin/eachSchool/">학교별 통계</a>
     <a href="/jns/statistics-admin/region/">지역별 통계</a>
-    <a href="/jns/statistics-admin/total/">학교급별 통계</a>
+    
+    {% if role == 'main_admin' %}
+    <a href="{% url 'school_statistics_view' %}">학교급별 통계</a>
+    {% endif %}
     <a href="/jns/admin/">관리자 메뉴</a>
 </div>
 
