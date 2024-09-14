@@ -103,11 +103,6 @@ body {
     line-height: 1.6em;
 }
 
-.main_v img {
-    max-width: 300%; /* 이미지 크기 조절 */
-    height: auto;
-    align-self: flex-end; /* 사람 이미지를 부모 요소의 하단에 정렬 */
-}
 
 /*-------------------------------------------------------------------------*/
 
@@ -143,19 +138,40 @@ body {
     background-size: cover; /* 배경 이미지 크기 설정 */
     background-position: center; /* 배경 이미지 중앙 정렬 */
     font-weight: bold;
+    position: relative;
 }
 
+.main_class li a::before {
+    content: '';
+    position: absolute;
+    top: 10px; /* 위쪽 간격 */
+    left: 10px; /* 왼쪽 간격 */
+    right: 10px; /* 오른쪽 간격 */
+    bottom: 10px; /* 아래쪽 간격 */
+    border: 2px solid white; /* 흰색 테두리 */
+    box-sizing: border-box; /* 패딩을 테두리와 함께 계산 */
+}
+
+/* 학생, 학부모, 교원 박스의 배경 색상과 이미지 설정 */
+
+/* 학생 박스 배경 색상 (파란색) */
 .main_class .m1 a {
-    background-image: url('/static/main/images/student_box.png'); /* 학생 박스 배경 이미지 */
+    background-color: #3b82f6; /* 원하는 색상 코드로 변경 */
+    background-image: none; /* 배경 이미지 제거 */
 }
 
+/* 학부모 박스 배경 색상 (초록색) */
 .main_class .m2 a {
-    background-image: url('/static/main/images/parent_box.png'); /* 학부모 박스 배경 이미지 */
+    background-color: #22c55e; /* 원하는 색상 코드로 변경 */
+    background-image: none; /* 배경 이미지 제거 */
 }
 
+/* 교원 박스 배경 색상 (주황색) */
 .main_class .m3 a {
-    background-image: url('/static/main/images/teacher_box.png'); /* 교원 박스 배경 이미지 */
+    background-color: #f97316; /* 원하는 색상 코드로 변경 */
+    background-image: none; /* 배경 이미지 제거 */
 }
+
 
 .main_class p {
     margin: 10px 0; /* 텍스트 간격 설정 */
@@ -163,7 +179,15 @@ body {
 }
 
 .main_class p:first-child {
-    font-size: 28px; /* 첫 번째 문구 (제목) 크기 설정 */
-    margin-bottom: 200px; /* 제목과 설명 사이 간격 설정 */
+    font-size: 35px; /* 첫 번째 문구 (제목) 크기 설정 */
+    margin-bottom: 35px; /* 제목과 설명 사이 간격 */
+    padding-top: 30px; /* 제목을 위로 밀어내어 공간 확보 */
+    padding-bottom: 10px; /* 글자와 선 사이 간격 */
+    border-bottom: 2px solid white; /* 글자 아래 선 추가 */
+    display: inline-block; /* 선이 텍스트 길이에 맞도록 설정 */
 }
 
+.main_class p:last-child {
+    margin-top: 30px; /* 설명 부분을 중간으로 올림 */
+    padding-bottom: 40px; /* 설명을 아래로 맞춰 공간을 확보 */
+}
