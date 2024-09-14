@@ -14,15 +14,6 @@ class School(models.Model):
     school_id = models.CharField(max_length=100) #각 학교별 아이디
     school_pw = models.CharField(max_length=100) #각 학교별 비밀번호
     
-    ROLE_CHOICES = [
-        ('본청', '본청 관리자'),
-        ('지역청', '지역청 관리자'),
-        ('학교', '학교 관리자'),
-        ('user', '일반 사용자')  # 일반 사용자 추가
-    ]
-    
-    role = models.CharField(max_length=15, choices=ROLE_CHOICES, default='user')  # 기본값을 일반 사용자로 설정
-    
     def __str__(self):
         return self.school_name
 

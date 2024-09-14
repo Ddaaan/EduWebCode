@@ -4,9 +4,10 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>전라남도교육청 : 학교민주주의 지수 설문조사</title>
+    <title>전라남도교육청 : 학교민주주의 지수</title>
+    <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'main/css/survey_complete.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/login_form.css' %}">
 </head>
 
 <body>
@@ -26,10 +27,28 @@
     </section>
 </header>
 
-<div class="complete-container">
-    <h1>설문이 완료되었습니다</h1>
-    <a class="return-button" href="/jns/main">홈페이지로 돌아가기</a>
-</div>
 
+<h2>{{ school_name }} 관리자 계정입니다</h2>
+
+<nav>
+    <ul>
+        <li><a href="{% url 'statistics_admin_page' %}">전체 통계관리</a></li>
+    </ul>
+</nav>
+
+<nav>
+    <ul>
+        <li><a href="{% url 'admin_logout' %}">로그아웃</a></li>
+    </ul>
+</nav>
+
+<footer id="footer">
+    <section class="footer">
+        <a class="sta"><img src="/static/main/images/logo.png" alt="전라남도 교육청" /></a>
+        <p class="copy">
+            (58564) 전라남도 무안군 삼향읍 어진누리길 10
+        </p>
+    </section>
+</footer>
 </body>
 </html>

@@ -1,0 +1,47 @@
+/* 학교민주주의 설명 섹션 */
+.democracy-section {
+    max-width: 1200px;
+    margin: 5px auto;
+    padding: 40px;
+    background-color: #f8f9fa; /* 배경색 추가 */
+    border-radius: 10px;
+    /*box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
+}
+
+.democracy-section h2 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #000000;
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.section-divider {
+    border: 0;
+    height: 2px;
+    background-color: #555d87; /* 전라남도 교육청 파란색 */
+    margin: 2px 0;
+    width: 50%;
+    margin-left: 0;
+}
+
+.democracy-section h3 {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 30px;
+    color: #333;
+}
+
+.democracy-section p {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #555;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.democracy-section strong {
+    color: #0046A8; /* 강조된 텍스트 색상 */
+    font-weight: bold;
+}

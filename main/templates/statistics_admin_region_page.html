@@ -1,4 +1,4 @@
-<!-- 관리자 페이지 (각 학교별 통계) : 전체 / 지역청 관리자 사용 가능-->
+<!-- 관리자 페이지 (각 지역별 통계) : 전체 / 지역청 관리자 사용 가능-->
 
 {% load static %}
 
@@ -34,9 +34,14 @@
 <!-- 사이드바 -->
 <div class="sidebar">
     <a href="/jns/statistics-admin/eachSchool/">학교별 통계</a>
+
+    {% if role == 'main_admin' or role == 'regional_admin' %}
     <a href="/jns/statistics-admin/region/">지역별 통계</a>
+    {% endif %}
+    
+    {% if role == 'main_admin'%}
     <a href="/jns/statistics-admin/total/">학교급별 통계</a>
-    <a href="/jns/admin/">관리자 메뉴</a>
+    {% endif %}
 </div>
 
 <div class="main-content">
