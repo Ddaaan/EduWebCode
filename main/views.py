@@ -41,25 +41,52 @@ def survey_complete(request):
     return render(request, 'survey_complete.html')
 
 def statistics_admin_page(request):
-    # 지역 데이터 가져오기
-    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    # role 값을 세션에서 가져옴
+    role = request.session.get('role')
+    
+    # 모든 지역을 가져오되, 지역청/학교 관리자는 본인의 지역만 보게 설정
+    if request.session.get('role') in ['regional_admin', 'school_admin']:
+        # 지역청 관리자의 지역을 세션에서 가져옴
+        region = request.session.get('region')
+        regions = [region]  # 지역청/학교 관리자는 본인의 지역만 선택 가능
+    else:
+        # 본청 관리자는 모든 지역을 볼 수 있음
+        regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
     
     # GET 요청일 때 지역 데이터만 템플릿으로 전달
-    return render(request, 'statistics_admin_page.html', {'regions': regions})
+    return render(request, 'statistics_admin_page.html', {'regions': regions, 'role': role})
 
 def statistics_admin_region_page(request):
-    # 지역 데이터 가져오기
-    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    # role 값을 세션에서 가져옴
+    role = request.session.get('role')
+    
+    # 모든 지역을 가져오되, 지역청/학교 관리자는 본인의 지역만 보게 설정
+    if request.session.get('role') in ['regional_admin', 'school_admin']:
+        # 지역청 관리자의 지역을 세션에서 가져옴
+        region = request.session.get('region')
+        regions = [region]  # 지역청/학교 관리자는 본인의 지역만 선택 가능
+    else:
+        # 본청 관리자는 모든 지역을 볼 수 있음
+        regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
     
     # GET 요청일 때 지역 데이터만 템플릿으로 전달
-    return render(request, 'statistics_admin_region_page.html', {'regions': regions})
+    return render(request, 'statistics_admin_region_page.html', {'regions': regions, 'role': role})
 
 def statistics_admin_total_page(request):
-    # 지역 데이터 가져오기
-    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    # role 값을 세션에서 가져옴
+    role = request.session.get('role')
+    
+    # 모든 지역을 가져오되, 지역청/학교 관리자는 본인의 지역만 보게 설정
+    if request.session.get('role') in ['regional_admin', 'school_admin']:
+        # 지역청 관리자의 지역을 세션에서 가져옴
+        region = request.session.get('region')
+        regions = [region]  # 지역청/학교 관리자는 본인의 지역만 선택 가능
+    else:
+        # 본청 관리자는 모든 지역을 볼 수 있음
+        regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
     
     # GET 요청일 때 지역 데이터만 템플릿으로 전달
-    return render(request, 'statistics_admin_total_page.html', {'regions': regions})
+    return render(request, 'statistics_admin_total_page.html', {'regions': regions, 'role': role})
 
 # 관리자 로그인
 def admin_login(request):
@@ -82,6 +109,7 @@ def admin_login(request):
                 if school.school_pw == school_pw:
                     request.session['school_id'] = school.school_id
                     request.session['school_name'] = school.school_name  # 이 부분에서 school_name이 저장됨
+                    request.session['region'] = school.district
                     
                     # school_level에 따라 역할 설정
                     if school.school_level in ['초등학교', '중학교', '고등학교', '유치원', '특수학교', '각종학교(중)', '각종학교(고)']:
@@ -107,6 +135,7 @@ def admin_dashboard(request):
     role = request.session.get('role')
     school_id = request.session.get('school_id')
     school_name = request.session.get('school_name')
+    region = request.session.get('region')
     
     if not role:
         messages.error(request, '권한이 없습니다. 다시 로그인 해주세요.')
@@ -114,13 +143,13 @@ def admin_dashboard(request):
     
     if role == 'school_admin':
         # 학교 관리자 대시보드로 이동
-        return render(request, 'school_dashboard.html', {'school_name': school_name})
+        return render(request, 'school_dashboard.html', {'school_name': school_name, 'school_id':school_id, 'region':region})
     elif role == 'regional_admin':
         # 지역청 관리자 대시보드로 이동
-        return render(request, 'regional_dashboard.html', {'school_name': school_name})
+        return render(request, 'regional_dashboard.html', {'school_name': school_name, 'school_id':school_id, 'region':region})
     elif role == 'main_admin':
         # 본청 관리자 대시보드로 이동
-        return render(request, 'main_dashboard.html', {'school_name': school_name})
+        return render(request, 'main_dashboard.html', {'school_name': school_name, 'school_id':school_id, 'region':region})
     
     # 만약 역할이 잘못되었다면 다시 로그인 페이지로
     messages.error(request, '권한이 없습니다. 다시 로그인 해주세요.')
@@ -287,6 +316,7 @@ def handle_survey_response(request):
 
     return redirect('survey_complete')
 
+########################################학교별 평균###################################################################
 ## 학생
 # 각 학교별 결과 통계 - 학생용 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
 def school_student_statistics(request):
@@ -638,8 +668,15 @@ def school_teacher_statistics(request):
 ########################################지역별 평균###################################################################
 
 # 지역별 평균 - 학생용 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
-def region_student_statistics(request):
-    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+def region_student_statistics(request):        
+    # 모든 지역을 가져오되, 지역청 관리자는 본인의 지역만 보게 설정
+    if request.session.get('role') == 'regional_admin':
+        # 지역청 관리자의 지역을 세션에서 가져옴
+        region = request.session.get('region')
+        regions = [region]  # 지역청 관리자는 본인의 지역만 선택 가능
+    else:
+        # 본청 관리자는 모든 지역을 볼 수 있음
+        regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
 
     if request.method == 'POST':
         region = request.POST.get('region')
@@ -740,13 +777,20 @@ def region_student_statistics(request):
             'average_total_response': average_total_response
         })
     
-    return render(request, 'statistics_admin_region_page.html', {'regions': regions})
+    return render(request, 'statistics_admin_region_page.html', {'regions': regions, 'role': request.session.get('role')})
 
 
 ## 학부모
 # 지역별 평균 - 학부모 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
 def region_parents_statistics(request):
-    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    # 모든 지역을 가져오되, 지역청 관리자는 본인의 지역만 보게 설정
+    if request.session.get('role') == 'regional_admin':
+        # 지역청 관리자의 지역을 세션에서 가져옴
+        region = request.session.get('region')
+        regions = [region]  # 지역청 관리자는 본인의 지역만 선택 가능
+    else:
+        # 본청 관리자는 모든 지역을 볼 수 있음
+        regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
 
     if request.method == 'POST':
         region = request.POST.get('region')
@@ -843,13 +887,20 @@ def region_parents_statistics(request):
             'average_total_response': average_total_response
         })
     
-    return render(request, 'statistics_admin_region_page.html', {'regions': regions})
+    return render(request, 'statistics_admin_region_page.html', {'regions': regions, 'role': request.session.get('role')})
 
 
 ## 교원
 # 지역별 평균 - 교직원 설문조사 (초/중/고 결과 통계) : 문항별 / 영역별 / 전체 통계
 def region_teacher_statistics(request):
-    regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
+    # 모든 지역을 가져오되, 지역청 관리자는 본인의 지역만 보게 설정
+    if request.session.get('role') == 'regional_admin':
+        # 지역청 관리자의 지역을 세션에서 가져옴
+        region = request.session.get('region')
+        regions = [region]  # 지역청 관리자는 본인의 지역만 선택 가능
+    else:
+        # 본청 관리자는 모든 지역을 볼 수 있음
+        regions = School.objects.values_list('district', flat=True).distinct().order_by('district')
 
     if request.method == 'POST':
         region = request.POST.get('region')
@@ -945,7 +996,8 @@ def region_teacher_statistics(request):
             'average_total_response': average_total_response
         })
     
-    return render(request, 'statistics_admin_region_page.html', {'regions': regions})
+    return render(request, 'statistics_admin_region_page.html', {'regions': regions, 'role': request.session.get('role')})
+    
 
 ########################################학교급별 평균###################################################################
 
