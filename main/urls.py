@@ -9,12 +9,15 @@ urlpatterns = [
     path('about2/', views.about2, name='about2'),
     path('file/', views.file, name='file'),
     path('select-info/', views.info_page, name='select-info'),
-    path('get-school-names/', views.get_school_names, name='get_school_names'),
     
     #관리자 로그인 url
     path('admin-login/', views.admin_login, name='admin_login'), #로그인 페이지
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),  # 관리자 대시보드
     path('admin-logout/', views.admin_logout, name='admin_logout'),  # 로그아웃
+    
+    # 정보선택 페이지 (학교, 학교id ajax) url
+    path('get-school-names/', views.get_school_names, name='get_school_names'),
+    path('get-school-id/', views.get_school_id, name='get_school_id'),
     
     #설문조사 페이지 이동 url
     path('ele-student-survey/', views.ele_stuSur_question, name='ele-student-s'),

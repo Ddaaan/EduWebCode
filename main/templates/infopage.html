@@ -56,21 +56,20 @@
             <option value="초등학교">초등학교</option>
             <option value="중학교">중학교</option>
             <option value="고등학교">고등학교</option>
-            <option value="고등학교">특수학교</option>
-            <option value="각종학교(초)">각종학교(초)</option>
+            <option value="특수학교">특수학교</option>
             <option value="각종학교(중)">각종학교(중)</option>
             <option value="각종학교(고)">각종학교(고)</option>
         </select>
         <br><br>
 
         <label for="school-name">학교명</label>
-        <select id="school-name" name="school-name">
+        <select id="school-name" name="school-name" onchange="updateSchoolId()">
             <option value="">먼저 지역과 학교급을 선택하세요</option>
         </select>
         <br><br>
 
         <label for="school-id">학교 아이디</label>
-        <input type="text" id="school-id" name="school-id">
+        <input type="text" id="school-id" name="school-id" readonly>
         <br><br>
 
         <input type="hidden" name="school_id" value="{{ school_id }}">
@@ -109,8 +108,9 @@
                 success : function (data) {
                     const schoolSelect = $('#school-name');
                     schoolSelect.empty();
+                    schoolSelect.append(new Option('학교를 선택하세요', 'default'));
                     data.schools.forEach(function (school) {
-                        console.log("School Data:", school);  // 추가된 부분: 학교 데이터를 개별적으로 출력
+                        console.log("School Data:", school);  // 디버깅: 학교 데이터를 개별적으로 출력
                         const optionText = $('<div>').text(school.school_name).html(); // HTML 인코딩 처리
                         schoolSelect.append(new Option(optionText, optionText));
                     });
@@ -118,6 +118,34 @@
             });
         }
     }
+
+
+    function updateSchoolId() {
+        console.log("updateSchoolId 함수가 호출되었습니다!"); // 이 줄을 추가하여 함수가 호출되는지 확인
+        const region = $('#region').val();
+        const schoolLevel = $('#school-level').val()
+        const schoolName = $('#school-name').val()
+
+        if (region && schoolLevel && schoolName) {
+            console.log("Sending AJAX request:", region, schoolLevel, schoolName);  // 이 줄을 추가하여 어떤 값으로 요청이 발생하는지 확인
+            $.ajax({
+                url : "{% url 'get_school_id' %}",
+                data : {
+                    'region' : region,
+                    'school_level' : schoolLevel,
+                    'school_name' : schoolName
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log("School Data:", data);  // 디버깅: 데이터를 개별적으로 출력
+                    const schoolId = data.schoolId[0].school_id;
+                    $('#school-id').val(schoolId);
+                }
+            });
+        }
+    }
+
+
 </script>
 
 </body>

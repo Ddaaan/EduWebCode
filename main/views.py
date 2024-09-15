@@ -181,6 +181,11 @@ def info_page(request):
         school_name = request.POST.get('school-name')
         school_id = request.POST.get('school-id')
         
+        # 특수 학교 학생 설문조사 X
+        if role == 'student' and school_level == '특수학교':
+            messages.error(request, "진행중인 설문조사가 없습니다")
+            return render(request, 'infopage.html', {'regions': regions, 'message': message})
+        
         try:
             school = School.objects.get(district = region, school_level=school_level, school_name=school_name, school_id=school_id)
             
@@ -193,19 +198,19 @@ def info_page(request):
             request.session['school_id'] = school_id
             
             if role == 'student':
-                if school_level in ['초등학교', '각종학교(초)']:
+                if school_level in ['초등학교']:
                     return redirect('ele-student-s')
                 elif school_level in ['중학교', '고등학교', '각종학교(중)', '각종학교(고)']:
                     return redirect('midhigh-student-s')
             elif role == 'parent':
                 if school_level == '유치원':
                     return redirect('kinder-parents-s')
-                elif school_level in ['초등학교', '중학교', '고등학교', '각종학교(초)', '각종학교(중)', '각종학교(고)']:
+                elif school_level in ['초등학교', '중학교', '고등학교', '각종학교(중)', '각종학교(고)', '특수학교']:
                     return redirect('school-parents-s')
             elif role == 'teacher':
                 if school_level == '유치원':
                     return redirect('kinder-teacher-s')
-                elif school_level in ['초등학교', '중학교', '고등학교', '각종학교(초)', '각종학교(중)', '각종학교(고)']:
+                elif school_level in ['초등학교', '중학교', '고등학교', '각종학교(중)', '각종학교(고)', '특수학교']:
                     return redirect('school-teacher-s')
             else:
                 messages.error(request, "유효하지 않은 접근입니다.")
@@ -224,6 +229,17 @@ def get_school_names(request):
     school_list = list(schools)
         
     return JsonResponse({'schools' : school_list})
+
+# 학교 id 가져오는 함수
+def get_school_id(request):
+    region = request.GET.get('region')
+    school_level = request.GET.get('school_level')
+    school_name = request.GET.get('school_name')
+    
+    schoolId = School.objects.filter(district=region, school_level=school_level, school_name=school_name).values('school_id')
+    school_id = list(schoolId)
+    
+    return JsonResponse({'schoolId' : school_id})
 
 ##공지사항
 # IP 주소 가져오는 함수
