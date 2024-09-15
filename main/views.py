@@ -274,11 +274,28 @@ def post_detail(request, post_id):
 #설문 관련 함수
 #설문 응답 처리 함수
 def handle_survey_response(request):
-    excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student.xlsx"
+    role = request.POST.get('role')
+    print(f"role : { role }")
+    
+    if role == 'student':
+        excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student.xlsx"
+        question_count = 22
+        people_count_col = 27
+    
+    elif role == 'parents':
+        excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_parents.xlsx"
+        question_count = 23
+        people_count_col = 28
+        
+    elif role == 'teacher':
+        excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_teacher.xlsx"
+        question_count = 25
+        people_count_col = 30
+        
 
     if request.method == 'POST':
         responses = []
-        for i in range(1, 22):
+        for i in range(1, question_count + 1):
             response = int(request.POST.get(f'question{i}', 0))
             responses.append(response)
 
@@ -306,8 +323,8 @@ def handle_survey_response(request):
                 ws.cell(row=row_to_update, column=i).value = current_value + response
                 print(f"학교 ID {school_id}에 대한 응답이 {row_to_update}번째 행의 {i}번째 열에 성공적으로 저장되었습니다.")  # 디버깅: 응답 저장 확인
 
-            current_value = ws.cell(row=row_to_update, column=27).value or 0  # 현재 값을 가져옴, 없으면 0
-            ws.cell(row=row_to_update, column=27).value = current_value + 1 #응답 인원 증가
+            current_value = ws.cell(row=row_to_update, column=people_count_col).value or 0  # 현재 값을 가져옴, 없으면 0
+            ws.cell(row=row_to_update, column=people_count_col).value = current_value + 1 #응답 인원 증가
             
             # 엑셀 파일 저장
             wb.save(excel_file_path)
@@ -1357,6 +1374,8 @@ def total_teacher_statistics(request):
 ########################################### 설문 질문 리스트 ####################################################
 #초등학생용 설문
 def ele_stuSur_question(request):
+    role = request.GET.get('role', 'student')
+    
     # 학교문화 관련 질문 (1~8)
     options = ["매우 아니다", "아니다", "보통이다", "그렇다", "매우 그렇다"]
     school_culture = [
@@ -1396,12 +1415,15 @@ def ele_stuSur_question(request):
         'school_structure': school_structure,
         'democratic_citizenship': democratic_citizenship,
         'options': options,
-        'school_id' : request.session.get('school_id')
+        'school_id': request.session.get('school_id'),
+        'role': role
     })
 
 
 # 중고등학생용 설문
 def midHigh_stuSur_question(request):
+    role = request.GET.get('role', 'student')
+    
     # 학교문화 관련 질문 (1~8)
     school_culture = [
         {'id': 1, 'text': '우리 학교는 규칙이나 약속을 정할 때 학생들의 의견이나 생각을 반영한다.'},
@@ -1442,13 +1464,16 @@ def midHigh_stuSur_question(request):
         'school_culture': school_culture,
         'school_structure': school_structure,
         'democratic_citizenship': democratic_citizenship,
-        'options': options
+        'options': options,
+        'school_id': request.session.get('school_id'),
+        'role': role
     })
 
 
 
 # 유치원 학부모용 설문
 def kinder_parSur_question(request):
+    role = request.GET.get('role', 'parents')
     # 학교문화 관련 질문 (1~10)
     school_culture = [
         {'id': 1, 'text': '우리 유치원은 교육 목표와 규칙을 결정할 때 학부모가 참여할 기회를 충분히 제공한다. *가정통신문, 설문조사, 협의회, 간담회, 홈페이지 등'},
@@ -1490,13 +1515,17 @@ def kinder_parSur_question(request):
         'school_culture': school_culture,
         'school_structure': school_structure,
         'democratic_citizenship': democratic_citizenship,
-        'options': options
+        'options': options,
+        'school_id' : request.session.get('school_id'),
+        'role': role
     })
 
 
 
 # 초중고 학부모용 설문
 def school_parSur_question(request):
+    role = request.GET.get('role', 'parents')
+    
     # 학교문화 관련 질문 (1~10)
     school_culture = [
         {'id': 1, 'text': '우리 학교는 교육 목표와 규칙을 결정할 때 학부모가 참여할 기회를 충분히 제공한다. *가정통신문, 설문조사, 협의회, 간담회, 홈페이지 등'},
@@ -1538,13 +1567,17 @@ def school_parSur_question(request):
         'school_culture': school_culture,
         'school_structure': school_structure,
         'democratic_citizenship': democratic_citizenship,
-        'options': options
+        'options': options,
+        'school_id' : request.session.get('school_id'),
+        'role': role
     })
 
 
 
 # 유치원 교직원용 설문
 def kinder_teaSur_question(request):
+    role = request.GET.get('role', 'teacher')
+    
     # 학교문화 관련 질문 (1~10)
     school_culture = [
         {'id': 1, 'text': '우리 유치원은 유치원의 비전과 목표 등을 결정할 때 구성원(유아, 교직원, 학부모)의 생각과 의견을 충분하게 반영한다.'},
@@ -1588,13 +1621,17 @@ def kinder_teaSur_question(request):
         'school_culture': school_culture,
         'school_structure': school_structure,
         'democratic_citizenship': democratic_citizenship,
-        'options': options
+        'options': options,
+        'school_id' : request.session.get('school_id'),
+        'role': role
     })
 
 
 
 # 초중고 교직원용 설문
 def school_teaSur_question(request):
+    role = request.GET.get('role', 'teacher')
+    
     # 학교문화 관련 질문 (1~10)
     school_culture = [
         {'id': 1, 'text': '우리 학교는 학교의 비전과 목표 등을 결정할 때 구성원(학생, 교직원, 학부모)의 생각과 의견을 충분하게 반영한다.'},
@@ -1638,5 +1675,7 @@ def school_teaSur_question(request):
         'school_culture': school_culture,
         'school_structure': school_structure,
         'democratic_citizenship': democratic_citizenship,
-        'options': options
+        'options': options,
+        'school_id': request.session.get('school_id'),
+        'role': role
     })

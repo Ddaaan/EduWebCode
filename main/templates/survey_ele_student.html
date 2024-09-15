@@ -7,6 +7,7 @@
     <title>전라남도교육청 : 학교민주주의 지수 설문조사</title>
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/student_sur.css' %}">
+    <script src="{% static 'main/js/survey_warning.js' %}"></script>
 </head>
 
 <body>
@@ -27,11 +28,13 @@
 </header>
 
 <div class="survey-container">
-    <form method="POST" action="{%  url 'handle_survey_response' %}">
+    <form method="POST" action="{%  url 'handle_survey_response' %}" onsubmit="return validateForm()">
         <h2>초등학생용 설문조사</h2>
         {% csrf_token %}
         <input type="hidden" name="school_id" value="{{ school_id }}">
+        <input type="hidden" name="role" value="{{ role }}">
         <h1>{{school_id}}</h1>
+        <h1>role: {{ role }}</h1>
 
         <!-- 학교문화 관련 질문 -->
         <h3>학교문화 관련</h3>
@@ -81,6 +84,7 @@
         <button type="submit" class="submit-btn">제출</button>
     </form>
 </div>
+
 
 
 
