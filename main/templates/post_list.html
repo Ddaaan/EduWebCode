@@ -28,7 +28,8 @@
     </header>
 
     <div class="list">
-        <h1>공지사항</h1>
+        <h2>공지사항</h2>
+        <hr class="section-divider"> <!-- 구분선 추가 -->
         <table>
             <thead>
                 <tr>
@@ -41,7 +42,7 @@
             <tbody>
                 {% for post in posts %}
                 <tr>
-                    <td>{{ forloop.counter }}</td>
+                    <td>{{ forloop.revcounter }}</td>
                     <td><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></td>
                     <td>{{ post.created_at|date:"Y-m-d" }}</td>
                     <td>{{ post.views }}</td>
@@ -49,7 +50,9 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'post_create' %}">글쓰기</a>
+        <div class="write_button">
+            <a href="{% url 'post_create' %}">글쓰기</a>
+        </div>
     </div>
 
 
