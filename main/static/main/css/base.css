@@ -52,7 +52,7 @@ body {
 }
 
 .sta04 {
-    max-width: 200px; /* 우측 로고 크기 조절 */
+    max-width: 80px; /* 우측 로고 크기 조절 */
     height: auto;
     margin-left: 50px; /* 오른쪽 로고와 메뉴 사이 간격 */
 }

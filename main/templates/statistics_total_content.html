@@ -2,32 +2,23 @@
 {% load static %}
 <script src="{% static 'main/js/statistics_graph.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<h1>응답합 출력</h1>
-<ul>
-    {% for response in responses %}
-        <li>문항 {{ forloop.counter }}: {{ response }}</li>
-    {% endfor %}
-</ul>
-
-<h1>평균 출력</h1>
-<ul>
-    <li>총 평균 점수: {{ average_response }}</li>
-</ul>
-
-<h1>section별 평균 출력</h1>
-<ul>
-    <li>총 평균 점수: {{ average_section_response }}</li>
-</ul>
-
-<h1>전체 평균 출력</h1>
-<ul>
-    <li>총 평균 점수: {{ average_total_response }}</li>
-</ul>
+<script src="{% static 'main/css/statistics_content.css' %}"></script>
 
 <!-- 그래프 그리기 -->
-<canvas id="student_question_canvas" width="400" height="200"></canvas>
-<canvas id="student_section_canvas" width="400" height="200"></canvas>
-<canvas id="student_total_canvas" width="400" height="200"></canvas>
+<div class="canvas-container">
+    <div class = "question_canvas">
+        <h3> 문항별 평균 </h3>
+        <canvas id="student_question_canvas" width="400" height="200"></canvas>
+    </div>
+    <div class = "section_canvas">
+        <h3> 영역별 평균 </h3>
+        <canvas id="student_section_canvas" width="400" height="200"></canvas>
+    </div>
+    <div class = "total_canvas">
+        <h3> 학교급별 평균 </h3>
+        <canvas id="student_total_canvas" width="400" height="200"></canvas>
+    </div>
+</div>
 
 
 </body>
