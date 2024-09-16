@@ -1,0 +1,61 @@
+/* 대시보드 스타일 */
+
+/* 전체 레이아웃 */
+.account {
+    max-width: 1200px;
+    margin: 50px auto; /* 상하 간격 및 가운데 정렬 */
+    padding: 40px;
+    background-color: #f4f4f9; /* 배경색 */
+    border-radius: 10px; /* 둥근 테두리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+/* 관리자 계정 제목 스타일 */
+.account h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* 네비게이션 스타일 */
+.account nav {
+    margin-top: 20px;
+}
+
+.account nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.account nav ul li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+/* 링크 스타일 */
+.account nav ul li a {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #0260c4; /* 기본 배경색 */
+    color: white;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+/* 마우스 오버 시 효과 */
+.account nav ul li a:hover {
+    background-color: #004a99; /* 오버 시 배경색 */
+}
+
+/* 로그아웃 버튼과 통계 버튼 크기 및 위치 동일하게 */
+.account nav ul li:last-child a {
+    background-color: #e74c3c; /* 로그아웃 버튼은 빨간색 */
+}
+
+.account nav ul li:last-child a:hover {
+    background-color: #c0392b; /* 오버 시 로그아웃 버튼 색상 */
+}

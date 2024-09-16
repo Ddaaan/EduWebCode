@@ -7,7 +7,7 @@
     <title>전라남도교육청 : 학교민주주의 지수</title>
     <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'main/css/login_form.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/dashboard.css' %}">
 </head>
 
 <body>
@@ -27,20 +27,21 @@
     </section>
 </header>
 
+<div class = "account">
+    <h2>{{ school_name }} 관리자 계정입니다</h2>
 
-<h2>{{ school_name }} 관리자 계정입니다</h2>
+    <nav>
+        <ul>
+            <li><a href="{% url 'statistics_admin_page' %}"> {{ school_name }} 통계관리</a></li>
+        </ul>
+    </nav>
 
-<nav>
-    <ul>
-        <li><a href="{% url 'statistics_admin_page' %}"> {{ school_name }} 통계관리</a></li>
-    </ul>
-</nav>
-
-<nav>
-    <ul>
-        <li><a href="{% url 'admin_logout' %}">로그아웃</a></li>
-    </ul>
-</nav>
+    <nav>
+        <ul>
+            <li><a href="{% url 'admin_logout' %}">로그아웃</a></li>
+        </ul>
+    </nav>
+</div>
 
 <footer id="footer">
     <section class="footer">
