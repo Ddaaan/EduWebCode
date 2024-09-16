@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>전라남도교육청 : 학교민주주의 지수</title>
-    <link rel="stylesheet" href="{% static 'main/css/notice.css' %}"> <!-- CSS 파일 경로 -->
+    <link rel="stylesheet" href="{% static 'main/css/post_create.css' %}"> <!-- CSS 파일 경로 -->
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
 </head>
 <body>
@@ -28,7 +28,10 @@
     </header>
 
     <div class="write">
-        <h1>글쓰기</h1>
+        <h2>공지사항</h2>
+        <hr class="section-divider"> <!-- 구분선 추가 -->
+
+        <h3>글쓰기</h3>
 
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}

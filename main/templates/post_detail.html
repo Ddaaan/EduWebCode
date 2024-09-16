@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>전라남도교육청 : 학교민주주의 지수</title>
-    <link rel="stylesheet" href="{% static 'main/css/notice.css' %}"> <!-- CSS 파일 경로 -->
+    <link rel="stylesheet" href="{% static 'main/css/post_detail.css' %}"> <!-- CSS 파일 경로 -->
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
 </head>
 <body>
@@ -28,17 +28,22 @@
     </header>
 
     <div class="detail">
-        <h1>{{ post.title }}</h1>
-        <p>{{ post.created_at|date:"Y-m-d H:i" }}</p>
-        <p>조회수 : {{ post.views }}</p>
+        <h2>공지사항</h2>
+        <hr class="section-divider"> <!-- 구분선 추가 -->
+        <div class="title"><h1>{{ post.title }}</h1>
+            <p>{{ post.created_at|date:"Y-m-d H:i" }}</p>
+            <p>조회수 : {{ post.views }}</p>
+        </div>
+        
+        <div class="content">
+            <p>{{ post.content }}</p>
 
-        <p>{{ post.content }}</p>
+            {% if post.file %}
+                <p>첨부 파일: <a href="{{ post.file.url }}">{{ post.file.name }}</a></p>
+            {% endif %}
 
-        {% if post.file %}
-            <p>첨부 파일: <a href="{{ post.file.url }}">{{ post.file.name }}</a></p>
-        {% endif %}
-
-        <p>파일이 있는지 확인: {% if post.file %} 있음 {% else %} 없음 {% endif %}</p>
+            <p>파일이 있는지 확인: {% if post.file %} 있음 {% else %} 없음 {% endif %}</p>
+        </div>
 
         <a href="{% url 'post_list' %}">목록으로 돌아가기</a>
     </div>

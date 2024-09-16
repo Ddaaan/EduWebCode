@@ -1,0 +1,89 @@
+/* 공지사항 상세 페이지 스타일 */
+.detail {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 40px;
+    background-color: #f8f9fa; /* 배경색 */
+    border-radius: 10px;
+    line-height: 1.8;
+    font-size: 18px;
+}
+
+.detail h2 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 30px;
+}
+
+.section-divider {
+    border: 0;
+    height: 2px;
+    background-color: #555d87; /* 전라남도 교육청 파란색 */
+    margin: 2px 0;
+    width: 50%;
+    margin-left: 0;
+}
+
+.detail h1 {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #000000; /* 제목 색상 */
+}
+
+.detail p {
+    font-size: 16px;
+    color: #333;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+/* 첨부 파일 링크 스타일 */
+.detail a {
+    color: #0260c4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.detail a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* 파일 상태 표시 스타일 */
+.detail .file-status {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* 목록으로 돌아가기 버튼 스타일 */
+.detail .back-button {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #0260c4;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.detail .back-button:hover {
+    background-color: #0056b3;
+}
+
+.footer {
+    margin-top: 40px;
+}
+
+/* 공통 링크 및 버튼 기본 스타일 */
+a, button, span {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    color: inherit;
+}
