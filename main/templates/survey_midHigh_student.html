@@ -33,9 +33,7 @@
         {% csrf_token %}
         <input type="hidden" name="school_id" value="{{ school_id }}">
         <input type="hidden" name="role" value="{{ role }}">
-        <h1>{{school_id}}</h1>
-        <h1>role: {{ role }}</h1>
-
+        
         <!-- 학교문화 관련 질문 -->
         <h3>학교문화 관련</h3>
         {% for question in school_culture %}
