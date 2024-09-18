@@ -29,7 +29,7 @@
 
 <div class="survey-container">
     <form method="POST" action="{% url 'handle_survey_response' %}" onsubmit="return validateForm()">
-        <h2>초중고 학부모용 설문조사</h2>
+        <h2>초중고 학부모용 설문조사</h2><hr><br>
         {% csrf_token %}
         <input type="hidden" name="school_id" value="{{ school_id }}">
         <input type="hidden" name="role" value="{{ role }}">
@@ -38,7 +38,7 @@
         <h3>학교문화 관련</h3>
         {% for question in school_culture %}
             <div class="question">
-                <h4>{{ forloop.counter }}. {{ question.text }}</h4>
+                <h4>{{ forloop.counter }}. {{ question.text|safe }}</h4>
                 <div class="options">
                     {% for option in options %}
                         <label class="option-label">
@@ -48,12 +48,13 @@
                 </div>
             </div>
         {% endfor %}
+        <br>
 
         <!-- 학교구조 관련 질문 -->
         <h3>학교구조 관련</h3>
         {% for question in school_structure %}
             <div class="question">
-                <h4>{{ forloop.counter }}. {{ question.text }}</h4>
+                <h4>{{ forloop.counter }}. {{ question.text|safe }}</h4>
                 <div class="options">
                     {% for option in options %}
                         <label class="option-label">
@@ -63,12 +64,13 @@
                 </div>
             </div>
         {% endfor %}
+        <br>
 
         <!-- 민주시민교육 실천 관련 질문 -->
         <h3>민주시민교육 실천</h3>
         {% for question in democratic_citizenship %}
             <div class="question">
-                <h4>{{ forloop.counter }}. {{ question.text }}</h4>
+                <h4>{{ forloop.counter }}. {{ question.text|safe }}</h4>
                 <div class="options">
                     {% for option in options %}
                         <label class="option-label">
@@ -78,6 +80,7 @@
                 </div>
             </div>
         {% endfor %}
+        <br>
 
         <button type="submit" class="submit-btn">제출</button>
     </form>
