@@ -25,6 +25,11 @@ from django.http import FileResponse, Http404
 import mimetypes
 from django.conf import settings
 
+from django.http import HttpResponseForbidden
+
+from django.contrib.auth.models import User  # Django User 모델
+from django.contrib.auth.hashers import check_password
+
 # Create your views here.
 def main_index(request):
     return render(request, "mainpage.html")
@@ -122,6 +127,16 @@ def admin_login(request):
                         request.session['role'] = 'regional_admin'
                     elif school.school_level == '본청':
                         request.session['role'] = 'main_admin'
+                        
+                    # 세션 설정 후 로그인 처리 (Django User 모델을 사용해서 로그인)
+                    user = authenticate(request, username=school.school_id, password=school_pw)
+                    if user:
+                        login(request, user)  # Django의 인증 시스템 사용
+                    else:
+                        # 유저가 없을 경우 Django User 객체를 만들고 로그인 처리
+                        new_user = User.objects.create_user(username=school.school_id, password=school_pw)
+                        new_user.save()
+                        login(request, new_user)
                     
                     return redirect ('admin_dashboard') # --> 로그인 완료 후 이동할 페이지
                 
@@ -262,6 +277,10 @@ def post_list(request):
 
 #게시글 작성
 def post_create(request):
+    # main_admin만 접근 가능
+    if not request.user.is_authenticated or request.user.username != 'A11420':
+        return HttpResponseForbidden("이 페이지에 접근할 수 있는 권한이 없습니다.")
+    
     if request.method == 'POST':
         title = request.POST['title']
         content = request.POST['content']

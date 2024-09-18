@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>전라남도교육청 : 학교민주주의 지수</title>
-    <link rel="stylesheet" href="{% static 'main/css/notice.css' %}"> <!-- CSS 파일 경로 -->
+    <link rel="stylesheet" href="{% static 'main/css/notice.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
 </head>
 <body>
@@ -50,9 +50,11 @@
                 {% endfor %}
             </tbody>
         </table>
-        <div class="write_button">
-            <a href="{% url 'post_create' %}">글쓰기</a>
-        </div>
+        {% if request.user.is_authenticated and request.user.username == 'A11420' %}
+            <div class="write_button">
+                <a href="{% url 'post_create' %}">글쓰기</a>
+            </div>
+        {% endif %}
     </div>
 
 
