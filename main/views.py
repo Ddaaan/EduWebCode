@@ -115,7 +115,7 @@ def admin_login(request):
                 school = School.objects.get(school_id = school_id)
                 
                 #비번 일치 확인
-                if school.school_pw == school_pw:
+                if check_password(school_pw, school.school_pw):  # 비번 암호화 되어있는 것 비교
                     request.session['school_id'] = school.school_id
                     request.session['school_name'] = school.school_name  # 이 부분에서 school_name이 저장됨
                     request.session['region'] = school.district

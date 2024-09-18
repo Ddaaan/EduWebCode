@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 import openpyxl
 from main.models import School
+from django.contrib.auth.hashers import make_password  # 비밀번호 해시화를 위한 함수
 
 class Command(BaseCommand):
     help = '학교 비밀번호를 엑셀 파일을 통해 업데이트합니다.'
@@ -21,7 +22,7 @@ class Command(BaseCommand):
             try:
                 school = School.objects.get(school_name=school_name, district=district)
                 school.school_id = id
-                school.school_pw = password
+                school.school_pw = make_password(password)
                 school.save()
                 self.stdout.write(self.style.SUCCESS(f'{school_name}의 비밀번호가 성공적으로 업데이트되었습니다.'))
             except School.DoesNotExist:
