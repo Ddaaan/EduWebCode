@@ -33,6 +33,7 @@ urlpatterns = [
     path('post/', views.post_list, name='post_list'),
     path('post/create/', views.post_create, name='post_create'), 
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),
+    path('download/<path:file_path>/', views.download_file, name='download_file'), #파일 다운로드
     
     #설문조사 결과 url
     #학교별 통계
@@ -54,7 +55,3 @@ urlpatterns = [
     path('statistics-admin/total/', views.statistics_admin_total_page, name='statistics_admin_total_page'), #지역별 통계 페이지 (최종)
 
 ]
-
-#미디어 파일 다운로드
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

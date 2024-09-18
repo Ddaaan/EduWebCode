@@ -39,7 +39,7 @@
             <p>{{ post.content }}</p>
 
             {% if post.file %}
-                <p>첨부 파일: <a href="{{ post.file.url }}">{{ post.file.name }}</a></p>
+                <p>첨부 파일: <a href="{% url 'download_file' post.file.name|urlencode %}">{{ post.file.name }}</a></p>
             {% endif %}
 
             <p>파일이 있는지 확인: {% if post.file %} 있음 {% else %} 없음 {% endif %}</p>

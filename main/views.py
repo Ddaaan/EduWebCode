@@ -21,6 +21,10 @@ import json
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 
+from django.http import FileResponse, Http404
+import mimetypes
+from django.conf import settings
+
 # Create your views here.
 def main_index(request):
     return render(request, "mainpage.html")
@@ -285,6 +289,19 @@ def post_detail(request, post_id):
         PostView.objects.create(post=post, ip_address=client_ip)
         
     return render(request, 'post_detail.html', {'post' : post})
+
+#파일 다운로드 함수
+def download_file(request, file_path):
+    file_full_path = os.path.join(settings.MEDIA_ROOT, file_path)
+    
+    # 파일이 존재하지 않을 경우 404 오류 반환
+    if not os.path.exists(file_full_path):
+        raise Http404("File does not exist")
+    
+    # 파일 다운로드 응답
+    response = FileResponse(open(file_full_path, 'rb'))
+    response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_full_path)}"'
+    return response
 
 
 #설문 관련 함수
