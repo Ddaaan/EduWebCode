@@ -57,8 +57,15 @@
     margin-bottom: 10px;
 }
 
+/* 버튼 컨테이너 스타일: 목록과 삭제 버튼을 나란히 배치 */
+.return_button, .delete_button {
+    display: inline-block;
+    margin-top: 20px;
+    margin-right: 10px; /* 두 버튼 사이의 간격 */
+}
+
 /* 목록으로 돌아가기 버튼 스타일 */
-.detail .back-button {
+.return_button a {
     display: inline-block;
     text-decoration: none;
     background-color: #0260c4;
@@ -67,15 +74,29 @@
     border-radius: 5px;
     font-weight: bold;
     transition: background-color 0.3s ease;
-    margin-top: 20px;
 }
 
-.detail .back-button:hover {
+.return_button a:hover {
     background-color: #0056b3;
 }
 
-.footer {
-    margin-top: 40px;
+/* 삭제 버튼 스타일 */
+.delete_button form {
+    display: inline-block;
+}
+
+.delete_button button {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete_button button:hover {
+    background-color: #c0392b;
 }
 
 /* 공통 링크 및 버튼 기본 스타일 */

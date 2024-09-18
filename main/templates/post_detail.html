@@ -41,11 +41,21 @@
             {% if post.file %}
                 <p>첨부 파일: <a href="{% url 'download_file' post.file.name|urlencode %}">{{ post.file.name }}</a></p>
             {% endif %}
-
-            <p>파일이 있는지 확인: {% if post.file %} 있음 {% else %} 없음 {% endif %}</p>
         </div>
 
-        <a href="{% url 'post_list' %}">목록으로 돌아가기</a>
+        <div class = "return_button">
+            <a href="{% url 'post_list' %}">목록으로 돌아가기</a>
+        </div>
+
+        <!-- 삭제 버튼: 삭제를 위한 POST 요청을 보냄 -->
+        <div class = "delete_button">
+            {% if request.user.is_authenticated and request.user.username == 'A11420' %}
+            <form action="{% url 'post_delete' post.id %}" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                {% csrf_token %}
+                <button type="submit">삭제</button>
+            </form>
+            {% endif %}
+        </div>
     </div>
 
 
@@ -57,6 +67,12 @@
             </p>
         </section>
     </footer>
+
+    <script>
+        function confirmDelete() {
+            return confirm("정말로 이 게시글을 삭제하시겠습니까?");
+        }
+    </script>
 
 </body>
 </html>

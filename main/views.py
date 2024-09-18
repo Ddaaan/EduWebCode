@@ -25,10 +25,12 @@ from django.http import FileResponse, Http404
 import mimetypes
 from django.conf import settings
 
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseNotAllowed
 
 from django.contrib.auth.models import User  # Django User 모델
 from django.contrib.auth.hashers import check_password
+
+from django.db.models.functions import Lower
 
 # Create your views here.
 def main_index(request):
@@ -321,6 +323,22 @@ def download_file(request, file_path):
     response = FileResponse(open(file_full_path, 'rb'))
     response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_full_path)}"'
     return response
+
+#게시글 삭제 함수
+def post_delete(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    # main_admin 또는 특정 사용자만 삭제 가능
+    if not request.user.is_authenticated or request.user.username != 'A11420':
+        return HttpResponseForbidden("이 페이지에 접근할 수 있는 권한이 없습니다.")
+
+    # POST 요청일 때만 삭제 진행
+    if request.method == 'POST':
+        post.delete()
+        return redirect('post_list')
+
+    # GET 요청일 경우 처리
+    return HttpResponseNotAllowed(['POST'], "이 작업은 POST 요청만 허용됩니다.")
 
 
 #설문 관련 함수
@@ -1098,7 +1116,7 @@ def total_student_statistics(request):
         print(f"전달된 학교급: {school_level}")  # 디버깅
 
         # 선택된 학교급에 맞는 학교들 조회 - SQL에서 실행됨
-        schools_in_level = School.objects.filter(school_level=school_level)
+        schools_in_level = School.objects.filter(school_level=school_level).order_by(Lower('school_name'))
         
         total_responses = []  # 응답 합산을 위한 초기화
         total_people_count = 0
@@ -1213,7 +1231,7 @@ def total_parents_statistics(request):
         print(f"전달된 학교급: {school_level}")  # 디버깅
 
         # 선택된 학교급에 맞는 학교들 조회 - SQL에서 실행됨
-        schools_in_level = School.objects.filter(school_level=school_level)
+        schools_in_level = School.objects.filter(school_level=school_level).order_by(Lower('school_name'))
         
         total_responses = []  # 응답 합산을 위한 초기화
         total_people_count = 0
@@ -1322,7 +1340,7 @@ def total_teacher_statistics(request):
         print(f"전달된 학교급: {school_level}")  # 디버깅
 
         # 선택된 학교급에 맞는 학교들 조회 - SQL에서 실행됨
-        schools_in_level = School.objects.filter(school_level=school_level)
+        schools_in_level = School.objects.filter(school_level=school_level).order_by(Lower('school_name'))
         
         total_responses = []  # 응답 합산을 위한 초기화
         total_people_count = 0
