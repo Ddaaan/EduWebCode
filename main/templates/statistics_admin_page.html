@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/sidebar.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/statistics_page.css' %}">
-    <link rel="stylesheet" href="{% static 'main/css/statistics_content.css' %}">
     <script src="{% static 'main/js/statistics_graph.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -39,7 +38,13 @@
         <a href="/jns/main"><img src="/static/main/images/sidebar_logo.png" alt="전라남도 교육청 로고" /></a>
     </div>
 
+    {% if role == 'main_admin' or role == 'regional_admin' %}
     <a href="/jns/statistics-admin/eachSchool/">학교별 통계</a>
+    {% endif %}
+
+    {% if role == 'school_admin' %}
+    <a href="/jns/statistics-admin/eachSchool/">학교 통계</a>
+    {% endif %}
 
     {% if role == 'main_admin' or role == 'regional_admin' %}
     <a href="/jns/statistics-admin/region/">지역별 통계</a>
@@ -115,6 +120,7 @@
     <div id="loading-message" style="display:none; color: red; font-size: 18px;">
         결과 산출 중입니다. 잠시만 기다려 주세요...
     </div>
+    
     <!-- 통계 결과 표시 -->
     <div id="statistics-results"></div>
 </div>

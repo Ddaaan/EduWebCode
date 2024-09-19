@@ -576,6 +576,7 @@ def school_student_statistics(request):
         'average_response': average_response,
         'average_section_response': average_section_response,
         'average_total_response': average_total_response,
+        'people_count': people_count,
         'regions': regions,
     }
     
@@ -586,6 +587,7 @@ def school_student_statistics(request):
         'html': html,
         'average_response': average_response,
         'average_section_response': average_section_response,
+        'people_count': people_count,
         'average_total_response': average_total_response
     })
 
@@ -691,6 +693,7 @@ def school_parents_statistics(request):
         'average_response': average_response,
         'average_section_response': average_section_response,
         'average_total_response': average_total_response,
+        'people_count': people_count,
         'regions': regions,
     }
     
@@ -701,6 +704,7 @@ def school_parents_statistics(request):
         'html': html,
         'average_response': average_response,
         'average_section_response': average_section_response,
+        'people_count': people_count,
         'average_total_response': average_total_response
     })
 
@@ -808,6 +812,7 @@ def school_teacher_statistics(request):
         'average_response': average_response,
         'average_section_response': average_section_response,
         'average_total_response': average_total_response,
+        'people_count': people_count,
         'regions': regions,
     }
     
@@ -818,6 +823,7 @@ def school_teacher_statistics(request):
         'html': html,
         'average_response': average_response,
         'average_section_response': average_section_response,
+        'people_count': people_count,
         'average_total_response': average_total_response
     })
 
@@ -925,6 +931,7 @@ def region_student_statistics(request):
             'average_response': average_response,
             'average_section_response': average_section_response,
             'average_total_response': average_total_response,
+            'people_count': total_people_count,
             'regions': regions,
         }
         
@@ -934,6 +941,7 @@ def region_student_statistics(request):
             'html': html,
             'average_response': average_response,
             'average_section_response': average_section_response,
+            'people_count': total_people_count,
             'average_total_response': average_total_response
         })
     
@@ -1035,6 +1043,7 @@ def region_parents_statistics(request):
             'average_response': average_response,
             'average_section_response': average_section_response,
             'average_total_response': average_total_response,
+            'people_count': total_people_count,
             'regions': regions,
         }
         
@@ -1044,6 +1053,7 @@ def region_parents_statistics(request):
             'html': html,
             'average_response': average_response,
             'average_section_response': average_section_response,
+            'people_count': total_people_count,
             'average_total_response': average_total_response
         })
     
@@ -1144,6 +1154,7 @@ def region_teacher_statistics(request):
             'average_response': average_response,
             'average_section_response': average_section_response,
             'average_total_response': average_total_response,
+            'people_count': total_people_count,
             'regions': regions,
         }
         
@@ -1153,6 +1164,7 @@ def region_teacher_statistics(request):
             'html': html,
             'average_response': average_response,
             'average_section_response': average_section_response,
+            'people_count': total_people_count,
             'average_total_response': average_total_response
         })
     
@@ -1261,6 +1273,7 @@ def total_student_statistics(request):
             'school_level': school_level,
             'average_response': average_response,
             'average_section_response': average_section_response,
+            'people_count': total_people_count,
             'average_total_response': average_total_response,
         }
         
@@ -1270,6 +1283,7 @@ def total_student_statistics(request):
             'html': html,
             'average_response': average_response,
             'average_section_response': average_section_response,
+            'people_count': total_people_count,
             'average_total_response': average_total_response
         })
     
@@ -1371,6 +1385,7 @@ def total_parents_statistics(request):
             'school_level': school_level,
             'average_response': average_response,
             'average_section_response': average_section_response,
+            'people_count': total_people_count,
             'average_total_response': average_total_response,
         }
         
@@ -1380,6 +1395,7 @@ def total_parents_statistics(request):
             'html': html,
             'average_response': average_response,
             'average_section_response': average_section_response,
+            'people_count': total_people_count,
             'average_total_response': average_total_response
         })
     
@@ -1480,6 +1496,7 @@ def total_teacher_statistics(request):
             'school_level': school_level,
             'average_response': average_response,
             'average_section_response': average_section_response,
+            'people_count': total_people_count,
             'average_total_response': average_total_response,
         }
         
@@ -1489,6 +1506,7 @@ def total_teacher_statistics(request):
             'html': html,
             'average_response': average_response,
             'average_section_response': average_section_response,
+            'people_count': total_people_count,
             'average_total_response': average_total_response
         })
     

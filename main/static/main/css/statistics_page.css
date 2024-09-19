@@ -52,6 +52,16 @@
     margin-bottom: 20px; /* 조회 폼과 그래프 사이 간격 추가 */
 }
 
+/* 응답 인원 수를 위한 스타일 */
+.response-count-container {
+    text-align: left; /* 텍스트를 왼쪽 정렬 */
+    margin-left: 50px; /* 그래프와 같은 시작 위치로 맞추기 위해 여백 조정 */
+    margin-top: 50px;
+    margin-bottom: 10px; /* 그래프와의 간격 추가 */
+    font-size: 20px; /* 글자 크기 */
+    color: #333; /* 텍스트 색상 */
+}
+
 /* 결과 그래프 나오는 폼 */
 /* 전체 컨테이너 스타일 */
 .canvas-container {

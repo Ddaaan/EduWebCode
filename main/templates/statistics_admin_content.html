@@ -3,7 +3,11 @@
 <script src="{% static 'main/js/statistics_graph.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-<script src="{% static 'main/css/statistics_content.css' %}"></script>
+
+<!-- 응답한 학생 수 -->
+<div class="response-count-container">
+    <h3>응답 인원 수: {{ people_count }}명</h3>
+</div>
 
 <!-- 그래프 그리기 -->
 <div class="canvas-container">
