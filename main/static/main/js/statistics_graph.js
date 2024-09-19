@@ -1,6 +1,6 @@
 function drawCharts(average_response, average_section_response, average_total_response) {
     // 첫 번째 그래프 (문항별 평균 점수)
-    var labels = Array.from({length: average_response.length}, (v, k) => "문항 "+ (k+1));
+    var labels = Array.from({length: average_response.length}, (v, k) => "문항 " + (k + 1));
     var ctx = document.getElementById('student_question_canvas').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
@@ -20,8 +20,23 @@ function drawCharts(average_response, average_section_response, average_total_re
                     beginAtZero: true,
                     max: 5
                 }
-            }
-        }
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    color: '#000',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function(value, context) {
+                        return value.toFixed(1); // 소수점 한 자리
+                    }
+                }
+            },
+            categoryPercentage: 0.7
+        },
+        plugins: [ChartDataLabels]
     });
 
     // 두 번째 그래프 (영역별 평균 점수)
@@ -45,8 +60,24 @@ function drawCharts(average_response, average_section_response, average_total_re
                     beginAtZero: true,
                     max: 5
                 }
-            }
-        }
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    color: '#000',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function(value, context) {
+                        return value.toFixed(1); // 소수점 한 자리
+                    }
+                }
+            },
+            barPercentage: 0.5,
+            categoryPercentage: 0.7
+        },
+        plugins: [ChartDataLabels]
     });
 
     // 세 번째 그래프 (총 평균 점수)
@@ -70,7 +101,23 @@ function drawCharts(average_response, average_section_response, average_total_re
                     beginAtZero: true,
                     max: 5
                 }
-            }
-        }
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    color: '#000',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function(value, context) {
+                        return value.toFixed(1); // 소수점 한 자리
+                    }
+                }
+            },
+            barPercentage: 0.3,
+            categoryPercentage: 0.7
+        },
+        plugins: [ChartDataLabels]
     });
 }

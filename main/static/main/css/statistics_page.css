@@ -1,0 +1,119 @@
+/* 조회 폼 컨테이너를 가로로 정렬 */
+#statistics-form {
+    display: flex;
+    flex-wrap: wrap; /* 화면 크기에 맞춰 줄 바꿈 가능 */
+    gap: 20px; /* 각 필드 사이 간격 설정 */
+    align-items: center; /* 수직 가운데 정렬 */
+}
+
+/* 각 필드 스타일: 크기를 작게 설정 */
+#statistics-form label {
+    font-size: 14px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center; /* 레이블 수직 중앙 정렬 */
+}
+
+#statistics-form select {
+    width: auto; /* 자동 너비 */
+    padding: 8px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center; /* select 내부 텍스트 수직 정렬 */
+}
+
+#statistics-form button {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    background-color: #005b99;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 36px; /* 버튼 높이를 select와 맞춤 */
+}
+
+#statistics-form button:hover {
+    background-color: #004b80;
+}
+
+/* 조회 폼 전체 영역 조정 */
+.info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 왼쪽 정렬 */
+    background-color: #fefefe; /* 회색 배경 */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* 조회 폼과 그래프 사이 간격 추가 */
+}
+
+/* 결과 그래프 나오는 폼 */
+/* 전체 컨테이너 스타일 */
+.canvas-container {
+    margin-left: 100px; /* 왼쪽 마진을 더 작게 설정 */
+    margin-right: auto;
+    display: flex;
+    justify-content: space-between; /* 그래프를 옆으로 나란히 배치하고 공간을 동일하게 나눔 */
+    flex-wrap: wrap; /* 화면이 좁아지면 그래프가 자동으로 다음 줄로 넘어가도록 함 */
+    gap: 30px; /* 그래프 사이의 간격을 더 넓게 설정 */
+    padding: 20px;
+    max-width: 1400px; /* 전체 컨테이너의 최대 너비를 더 크게 설정 */
+    margin-top: 20px; /* 그래프 상단에 여백 추가 */
+    background-color: #fefefe;
+    border-radius: 10px;
+}
+
+.canvas-container h3 {
+    font-size: 25px; /* 제목의 크기를 더 크게 설정 */
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* 개별 캔버스 스타일 */
+.canvas-item {
+    flex: 1; /* 각 그래프가 같은 비율로 크기를 차지하도록 함 */
+    min-width: 400px; /* 최소 크기를 더 크게 설정 */
+    max-width: 500px; /* 최대 크기를 더 크게 설정 */
+    text-align: center;
+    background-color: #ffffff;
+    padding: 20px; /* 패딩을 더 넓게 설정 */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* 각 그래프 아래에 여백 추가 */
+}
+
+
+.canvas-item h3 {
+    font-size: 30px; /* 제목의 크기를 더 크게 설정 */
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* 반응형 처리 */
+@media (max-width: 768px) {
+    .canvas-item {
+        flex: 1 1 100%; /* 화면이 좁아지면 한 줄에 한 개씩 배치 */
+    }
+}
+
+/* 캔버스 크기 조정 */
+canvas {
+    width: 100% !important;  /* 캔버스가 부모 요소에 맞게 조정 */
+    height: 350px !important; /* 고정된 높이를 더 크게 설정 */
+}
+
+#student_question_canvas {
+    height: 500px !important;
+    width: 100% !important;
+}
+
+/* 영역별 평균, 전체 평균 그래프의 크기 */
+#student_section_canvas, #student_total_canvas {
+    height: 500px !important;
+    width: 100% !important;
+}

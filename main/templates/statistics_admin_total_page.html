@@ -7,17 +7,18 @@
 <head>
     <meta charset="UTF-8">
     <title>전라남도교육청 : 학교민주주의 지수</title>
-    <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/statistics_page.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/statistics_content.css' %}">
     <script src="{% static 'main/js/statistics_graph.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </head>
 
 <body>
 <header id="header" class="header">
     <section class="header">
-        <a class="sta" href="/jns/main"><img src="/static/main/images/logo.png" alt="전라남도 교육청 로고" /></a>
         <nav class="jn">
             <ul>
                 <li class=""><a href="/jns/about1">학교민주주의 정책 이해</a></li>
@@ -33,6 +34,11 @@
 
 <!-- 사이드바 -->
 <div class="sidebar">
+    <!-- 전라남도 교육청 로고 추가 -->
+    <div class="sidebar-logo">
+        <a href="/jns/main"><img src="/static/main/images/sidebar_logo.png" alt="전라남도 교육청 로고" /></a>
+    </div>
+
     <a href="/jns/statistics-admin/eachSchool/">학교별 통계</a>
 
     {% if role == 'main_admin' or role == 'regional_admin' %}
