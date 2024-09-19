@@ -1,34 +1,34 @@
 function validateForm() {
-    // 문항 개수 확인
-    const questionCount = 21;
+    // 모든 질문을 가져옴
+    const questions = document.querySelectorAll('.question');
     let allAnswered = true;
 
-    //각 질문에 응답 확인
-    for (let i = 1; i <= questionCount; i++) {
-        const options = document.getElementsByName('question${i}');
+    // 각 질문에 대한 응답 확인
+    questions.forEach((question) => {
+        const options = question.querySelectorAll('input[type="radio"]');
         let answered = false;
 
-        //옵션이 체크된지 확인
-        for (let option of options) {
+        // 각 질문의 옵션들 중에서 체크된 것이 있는지 확인
+        options.forEach((option) => {
             if (option.checked) {
                 answered = true;
-                break;
             }
-        }
-        
-        // 응답안된 질문 있으면 false
+        });
+
+        // 응답되지 않은 질문이 있으면 경고 처리
         if (!answered) {
             allAnswered = false;
-            break;
-        }           
-    }
+            question.querySelector('h4').style.color = "red"; // 응답하지 않은 질문의 제목을 빨간색으로 표시
+        } else {
+            question.querySelector('h4').style.color = ""; // 응답된 질문은 원래 색상으로
+        }
+    });
 
-    // 문항에 답변하지 않았으면 경고창 (false일 때)
+    // 문항에 답변하지 않았으면 경고창 표시
     if (!allAnswered) {
         alert('모든 문항에 답해주세요');
         return false;
     }
 
-    return true;
-    
+    return true; // 모든 질문에 응답했으면 폼 제출 허용
 }
