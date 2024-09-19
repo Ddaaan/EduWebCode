@@ -32,6 +32,8 @@ from django.contrib.auth.hashers import check_password
 
 from django.db.models.functions import Lower
 
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 def main_index(request):
     return render(request, "mainpage.html")
@@ -51,6 +53,7 @@ def file(request):
 def survey_complete(request):
     return render(request, 'survey_complete.html')
 
+@login_required(login_url='/jns/admin-login/')
 def statistics_admin_page(request):
     # role 값을 세션에서 가져옴
     role = request.session.get('role')
@@ -67,6 +70,7 @@ def statistics_admin_page(request):
     # GET 요청일 때 지역 데이터만 템플릿으로 전달
     return render(request, 'statistics_admin_page.html', {'regions': regions, 'role': role})
 
+@login_required(login_url='/jns/admin-login/')
 def statistics_admin_region_page(request):
     # role 값을 세션에서 가져옴
     role = request.session.get('role')
@@ -83,6 +87,7 @@ def statistics_admin_region_page(request):
     # GET 요청일 때 지역 데이터만 템플릿으로 전달
     return render(request, 'statistics_admin_region_page.html', {'regions': regions, 'role': role})
 
+@login_required(login_url='/jns/admin-login/')
 def statistics_admin_total_page(request):
     # role 값을 세션에서 가져옴
     role = request.session.get('role')
