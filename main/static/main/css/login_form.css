@@ -8,7 +8,7 @@
 
 .login-form {
     background-color: #f9f9f9; /* 배경색 */
-    padding: 30px 40px; /* 패딩 */
+    padding: 40px 50px; /* 패딩 */
     border-radius: 8px; /* 둥근 모서리 */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 */
     width: 400px; /* 폼 너비 */
