@@ -1,9 +1,9 @@
 /* 학교민주주의 설명 섹션 */
 .democracy-section {
     max-width: 1200px;
-    margin: 5px auto;
+    margin: 20px auto;
     padding: 40px;
-    background-color: #f8f9fa; /* 배경색 추가 */
+    background-color: #fcfcfc; /* 배경색 추가 */
     border-radius: 10px;
     /*box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);*/
 }

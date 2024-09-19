@@ -3,101 +3,182 @@
     max-width: 1200px;
     margin: 20px auto;
     padding: 40px;
-    background-color: #f8f9fa; /* 배경색 */
+    background-color: #fcfcfc; /* 배경색 */
     border-radius: 10px;
-    line-height: 1.8;
+}
+
+/* 본문 텍스트 */
+.detail p {
     font-size: 18px;
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 150px;
+    padding-left: 15px; /* 제목과 동일한 padding 값 추가 */
+    padding-right: 15px; /* 오른쪽 여백도 추가 */
 }
 
 .detail h2 {
     font-size: 30px;
     font-weight: bold;
     color: #000000;
-    margin-bottom: 30px;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
+/* 공통 구분선 스타일 */
 .section-divider {
     border: 0;
     height: 2px;
-    background-color: #555d87; /* 전라남도 교육청 파란색 */
+    background-color: #555d87;
     margin: 2px 0;
-    width: 50%;
     margin-left: 0;
 }
 
-.detail h1 {
-    font-size: 26px;
+/* 첫 번째 구분선 스타일 */
+.section-divider-top {
+    width: 50%;
+    background-color: #555d87; /* 전라남도 교육청 파란색 */
+}
+
+
+/* 제목 부분 스타일 */
+.highlighted-title {
+    background-color: #f4f4f9;  /* 배경색 설정 */
+    padding: 20px;  /* 여백을 추가하여 넓게 만듦 */
+    margin-top: 20px;  /* 위쪽 여백 추가 */
+    margin-bottom: 10px;  /* 아래쪽 여백 추가 */
+    border-radius: 5px;  /* 테두리 둥글게 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* 그림자 효과 */
+    position: relative;  /* 내부 위치 조정을 위해 relative 사용 */
+}
+
+/* 제목 텍스트 스타일 */
+.highlighted-title h1 {
+    color: #000000;  /* 제목 텍스트 색상 */
+    font-size: 24px;  /* 글자 크기 */
     font-weight: bold;
-    margin-bottom: 20px;
-    color: #000000; /* 제목 색상 */
+    margin: 0;  /* 제목의 상하 여백 제거 */
+    text-align: left;  /* 왼쪽 정렬 */
 }
 
+/* 본문 텍스트 */
 .detail p {
-    font-size: 16px;
+    font-size: 18px;
     color: #333;
-    margin-top: 10px;
-    margin-bottom: 15px;
+    margin-top: 20px;
+    margin-bottom: 150px;
 }
 
-/* 첨부 파일 링크 스타일 */
-.detail a {
+/* 제목과 작성일, 조회수 스타일 */
+.title-container {
+    display: flex;
+    justify-content: space-between; /* 제목과 메타 정보를 양쪽에 배치 */
+    align-items: flex-start; /* 위쪽 정렬 */
+    margin-bottom: 20px;
+}
+
+.highlighted-title {
+    flex-grow: 1; /* 제목이 가능한 공간을 차지하게 함 */
+    background-color: #f4f4f9;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.post-meta {
+    font-size: 14px;
+    color: #888;
+    text-align: right; /* 메타 정보 오른쪽 정렬 */
+}
+
+.post-meta span {
+    margin-left: 15px; /* 작성일과 조회수 사이 간격 */
+    display: inline-block;
+}
+
+
+/* 첨부파일 테이블 스타일 */
+.attachments {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.attachments h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* 첨부파일 테이블 스타일 */
+.attachments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.attachments-table th, .attachments-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    font-size: 16px;
+}
+
+.attachments-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.attachments-table td a {
     color: #0260c4;
     text-decoration: none;
     font-weight: bold;
 }
 
-.detail a:hover {
-    color: #0056b3;
+.attachments-table td a:hover {
     text-decoration: underline;
+    color: #0056b3;
 }
 
-/* 파일 상태 표시 스타일 */
-.detail .file-status {
-    color: #333;
-    margin-bottom: 10px;
+
+/* 버튼 컨테이너 */
+.button-container {
+    display: flex;
+    justify-content: space-between; /* 버튼을 양쪽 끝으로 배치 */
+    margin-top: 30px;
 }
 
-/* 버튼 컨테이너 스타일: 목록과 삭제 버튼을 나란히 배치 */
-.return_button, .delete_button {
-    display: inline-block;
-    margin-top: 20px;
-    margin-right: 10px; /* 두 버튼 사이의 간격 */
-}
-
-/* 목록으로 돌아가기 버튼 스타일 */
-.return_button a {
+/* 목록으로 돌아가기 버튼과 삭제 버튼 동일한 크기 적용 */
+.return_button a, .delete_button button {
     display: inline-block;
     text-decoration: none;
-    background-color: #0260c4;
+    background-color: #14131390; /* 목록 버튼 배경색 */
     color: white;
-    padding: 10px 20px;
+    padding: 10px 20px; /* 동일한 패딩 값 */
     border-radius: 5px;
     font-weight: bold;
     transition: background-color 0.3s ease;
+    font-size: 16px; /* 버튼 글씨 크기 동일화 */
+    min-width: 40px; /* 동일한 최소 너비 설정 */
+    line-height: 1.5; /* 동일한 line-height 설정 */
+    text-align: center; /* 텍스트 가운데 정렬 */
 }
 
 .return_button a:hover {
-    background-color: #0056b3;
+    background-color: #0f0e0eb7;
 }
 
 /* 삭제 버튼 스타일 */
-.delete_button form {
-    display: inline-block;
-}
-
 .delete_button button {
     background-color: #e74c3c;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
 .delete_button button:hover {
     background-color: #c0392b;
 }
+
 
 /* 공통 링크 및 버튼 기본 스타일 */
 a, button, span {

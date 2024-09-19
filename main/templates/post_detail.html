@@ -29,32 +29,56 @@
 
     <div class="detail">
         <h2>공지사항</h2>
-        <hr class="section-divider"> <!-- 구분선 추가 -->
-        <div class="title"><h1>{{ post.title }}</h1>
-            <p>{{ post.created_at|date:"Y-m-d H:i" }}</p>
-            <p>조회수 : {{ post.views }}</p>
+        <hr class="section-divider section-divider-top"> <!-- 구분선 추가 -->
+        
+        <div class="title">
+            <div class="highlighted-title">
+                <h1>{{ post.title }}</h1>
+            </div>
+            <div class="post-meta">
+                <span>작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span>
+                <span>조회수: {{ post.views }}</span>
+            </div>
         </div>
+
+        
         
         <div class="content">
             <p>{{ post.content }}</p>
+            
 
             {% if post.file %}
-                <p>첨부 파일: <a href="{% url 'download_file' post.file.name|urlencode %}">{{ post.file.name }}</a></p>
+            <div class="attachments">
+                <table class="attachments-table">
+                    <thead>
+                        <tr>
+                            <th>첨부파일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="{% url 'download_file' post.file.name|urlencode %}">{{ post.file.name }}</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             {% endif %}
         </div>
 
-        <div class = "return_button">
-            <a href="{% url 'post_list' %}">목록으로 돌아가기</a>
-        </div>
+        <div class="button-container">
+            <!-- 삭제 버튼: 삭제를 위한 POST 요청을 보냄 -->
+            <div class = "delete_button">
+                {% if request.user.is_authenticated and request.user.username == 'A11420' %}
+                <form action="{% url 'post_delete' post.id %}" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    {% csrf_token %}
+                    <button type="submit">삭제</button>
+                </form>
+                {% endif %}
+            </div>
 
-        <!-- 삭제 버튼: 삭제를 위한 POST 요청을 보냄 -->
-        <div class = "delete_button">
-            {% if request.user.is_authenticated and request.user.username == 'A11420' %}
-            <form action="{% url 'post_delete' post.id %}" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                {% csrf_token %}
-                <button type="submit">삭제</button>
-            </form>
-            {% endif %}
+            <div class = "return_button">
+                <a href="{% url 'post_list' %}">목록</a>
+            </div>
         </div>
     </div>
 

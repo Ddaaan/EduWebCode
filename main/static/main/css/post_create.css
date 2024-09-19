@@ -1,12 +1,10 @@
 /* 글쓰기 폼 섹션 스타일 */
 .write {
     max-width: 1200px;
-    margin: 5px auto;
+    margin: 20px auto;
     padding: 40px;
-    background-color: #f8f9fa;
+    background-color: #fcfcfc;
     border-radius: 10px;
-    font-size: 16px;
-    line-height: 1.8;
 }
 
 .write h2 {
@@ -19,9 +17,9 @@
 }
 
 .write h3 {
-    font-size: 22px;
+    font-size: 25px;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
 .section-divider {
@@ -39,7 +37,7 @@
     font-size: 16px;
     font-weight: bold;
     color: #555;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .write input[type="text"],
@@ -64,7 +62,14 @@
 /* 텍스트 영역 스타일 */
 .write textarea {
     height: 500px;
-    resize: none; /* 사용자가 텍스트 박스 크기를 조정할 수 있게 함 */
+    resize: none; /* 사용자가 텍스트 박스 크기를 조정하지 못하게 함*/
+}
+
+/* 버튼 컨테이너 스타일 */
+.button-container {
+    display: flex;
+    justify-content: space-between; /* 저장 버튼은 왼쪽, 돌아가기 버튼은 오른쪽 */
+    margin-top: 10px;
 }
 
 /* 저장 버튼 스타일 */
@@ -77,29 +82,29 @@
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    display: inline-block;
+    font-size: 16px;
 }
 
 .write button:hover {
     background-color: #0056b3;
 }
 
-/* 돌아가기 링크 스타일 */
+/* 돌아가기 버튼 스타일 */
 .write a {
-    display: inline-block;
     text-decoration: none;
-    background-color: #28a745;
+    background-color: #14131390;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
     font-weight: bold;
     transition: background-color 0.3s ease;
-    margin-top: 20px;
+    font-size: 16px;
 }
 
 .write a:hover {
-    background-color: #218838;
+    background-color: #0f0e0eb7;
 }
+
 
 /* 기본 요소 초기화 */
 a, button, span {

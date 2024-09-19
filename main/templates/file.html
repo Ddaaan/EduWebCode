@@ -96,5 +96,11 @@
         </section>
     </footer>
 
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/admin-logout'); // 실제 로그아웃 URL로 변경
+        });
+    </script>    
+
 </body>
 </html>

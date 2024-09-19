@@ -203,7 +203,7 @@ def info_page(request):
         school_id = request.POST.get('school-id')
         
         # 특수 학교 학생 설문조사 X
-        if role == 'student' and school_level == '특수학교':
+        if role == 'student' and school_level in ['특수학교', '각종학교(중)', '각종학교(고)']:
             messages.error(request, "진행중인 설문조사가 없습니다")
             return render(request, 'infopage.html', {'regions': regions, 'message': message})
         
@@ -221,7 +221,7 @@ def info_page(request):
             if role == 'student':
                 if school_level in ['초등학교']:
                     return redirect('ele-student-s')
-                elif school_level in ['중학교', '고등학교', '각종학교(중)', '각종학교(고)']:
+                elif school_level in ['중학교', '고등학교']:
                     return redirect('midhigh-student-s')
             elif role == 'parent':
                 if school_level == '유치원':
