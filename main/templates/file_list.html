@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>전라남도교육청 : 학교민주주의 지수</title>
-    <link rel="stylesheet" href="{% static 'main/css/post_create.css' %}"> <!-- CSS 파일 경로 -->
+    <link rel="stylesheet" href="{% static 'main/css/notice.css' %}">
     <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
 </head>
 <body>
@@ -27,29 +27,34 @@
         </section>
     </header>
 
-    <div class="write">
-        <h2>공지사항</h2>
+    <div class="list">
+        <h2>자료실</h2>
         <hr class="section-divider"> <!-- 구분선 추가 -->
-
-        <h3>글쓰기</h3>
-
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label for="title">제목</label><br>
-            <input type="text" id="title" name="title" required><br><br>
-
-            <label for="content">내용</label><br>
-            <textarea id="content" name="content" required></textarea><br><br>
-
-            <label for="file">파일</label><br>
-            <input type="file" id="file" name="file"><br><br>
-
-            <!-- 버튼 컨테이너 -->
-            <div class="button-container">
-                <a href="{% url 'file_list' %}">돌아가기</a>
-                <button type="submit">저장</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>등록일</th>
+                    <th>조회수</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td>{{ forloop.revcounter }}</td>
+                    <td><a href="{% url 'file_detail' file.id %}">{{ file.title }}</a></td>
+                    <td>{{ file.created_at|date:"Y-m-d" }}</td>
+                    <td>{{ file.views }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if request.user.is_authenticated and request.user.username == 'A11420' %}
+            <div class="write_button">
+                <a href="{% url 'file_create' %}">글쓰기</a>
             </div>
-        </form>
+        {% endif %}
     </div>
 
 

@@ -1,0 +1,101 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전라남도교육청 : 학교민주주의 지수</title>
+    <link rel="stylesheet" href="{% static 'main/css/post_detail.css' %}"> <!-- CSS 파일 경로 -->
+    <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
+</head>
+<body>
+
+    <header id="header">
+        <section class="header">
+            <a class="sta" href="/jns/main"><img src="/static/main/images/logo.png" alt="전라남도 교육청 로고" /></a>
+            <nav class="jn">
+                <ul>
+                    <li class=""><a href="/jns/about1">학교민주주의 정책 이해</a></li>
+                <li class=""><a href="/jns/about2">학교민주주의 지수 안내</a></li>
+                <li class=""><a href="/jns/post">공지사항</a></li>
+                <li class=""><a href="/jns/file">자료실</a></li>
+                <li class=""><a href="/jns/admin-login">학교관리자</a></li>
+                </ul>
+            </nav>
+            <img src="/static/main/images/sta04.png" alt="전남교육 아이좋아 로고" class="sta04">
+        </section>
+    </header>
+
+    <div class="detail">
+        <h2>공지사항</h2>
+        <hr class="section-divider section-divider-top"> <!-- 구분선 추가 -->
+        
+        <div class="title">
+            <div class="highlighted-title">
+                <h1>{{ file.title }}</h1>
+            </div>
+            <div class="post-meta">
+                <span>작성일: {{ file.created_at|date:"Y-m-d H:i" }}</span>
+                <span>조회수: {{ file.views }}</span>
+            </div>
+        </div>
+
+        
+        
+        <div class="content">
+            <p>{{ file.content }}</p>
+
+            {% if file.file %}
+            <div class="attachments">
+                <table class="attachments-table">
+                    <thead>
+                        <tr>
+                            <th>첨부파일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="{% url 'download_file' file.file.name|urlencode %}">{{ file.file.name }}</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="button-container">
+            <!-- 삭제 버튼: 삭제를 위한 POST 요청을 보냄 -->
+            <div class = "delete_button">
+                {% if request.user.is_authenticated and request.user.username == 'A11420' %}
+                <form action="{% url 'file_delete' file.id %}" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    {% csrf_token %}
+                    <button type="submit">삭제</button>
+                </form>
+                {% endif %}
+            </div>
+
+            <div class = "return_button">
+                <a href="{% url 'file_list' %}">목록</a>
+            </div>
+        </div>
+    </div>
+
+
+    <footer id="footer">
+        <section class="footer">
+            <a class="sta"><img src="/static/main/images/logo.png" alt="전라남도 교육청" /></a>
+            <p class="copy">
+                (58564) 전라남도 무안군 삼향읍 어진누리길 10
+            </p>
+        </section>
+    </footer>
+
+    <script>
+        function confirmDelete() {
+            return confirm("정말로 이 게시글을 삭제하시겠습니까?");
+        }
+    </script>
+
+</body>
+</html>

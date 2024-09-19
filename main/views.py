@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 
 from django.shortcuts import render, redirect, get_object_or_404
-from main.models import School
+from main.models import School, File, FileView
 from .models import Post, PostView
 from django.utils import timezone
 from .forms import LoginForm
@@ -338,6 +338,56 @@ def post_delete(request, post_id):
         return redirect('post_list')
 
     # GET 요청일 경우 처리
+    return HttpResponseNotAllowed(['POST'], "이 작업은 POST 요청만 허용됩니다.")
+
+
+
+###자료실 함수
+# 파일 목록
+def file_list(request):
+    files = File.objects.all().order_by('-created_at')  # 작성일 내림차순 정렬
+    return render(request, 'file_list.html', {'files': files})
+
+# 파일 업로드
+def file_create(request):
+    if not request.user.is_authenticated or request.user.username != 'A11420':
+        return HttpResponseForbidden("이 페이지에 접근할 수 있는 권한이 없습니다.")
+    
+    if request.method == 'POST':
+        title = request.POST['title']
+        content = request.POST['content']
+        file = request.FILES.get('file')  # 파일 가져오기
+        
+        File.objects.create(title=title, content=content, file=file, created_at=timezone.now())
+        return redirect('file_list')
+    
+    return render(request, 'file_create.html')
+
+# 파일 상세 보기
+def file_detail(request, file_id):
+    file = get_object_or_404(File, id=file_id)
+    
+    client_ip = get_client_ip(request)
+    
+    if not FileView.objects.filter(file=file, ip_address=client_ip).exists(): #접속한 ip로 이미 조회했는지 확인
+        file.views += 1 #조회수
+        file.save()
+        
+        FileView.objects.create(file=file, ip_address=client_ip)
+    
+    return render(request, 'file_detail.html', {'file': file})
+
+# 파일 삭제
+def file_delete(request, file_id):
+    file = get_object_or_404(File, id=file_id)
+
+    if not request.user.is_authenticated or request.user.username != 'A11420':
+        return HttpResponseForbidden("이 페이지에 접근할 수 있는 권한이 없습니다.")
+    
+    if request.method == 'POST':
+        file.delete()
+        return redirect('file_list')
+
     return HttpResponseNotAllowed(['POST'], "이 작업은 POST 요청만 허용됩니다.")
 
 

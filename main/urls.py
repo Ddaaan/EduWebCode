@@ -7,7 +7,6 @@ urlpatterns = [
     path('main/', views.main_index, name='main'),
     path('about1/', views.about1, name='about1'),
     path('about2/', views.about2, name='about2'),
-    path('file/', views.file, name='file'),
     path('select-info/', views.info_page, name='select-info'),
     
     #관리자 로그인 url
@@ -35,6 +34,12 @@ urlpatterns = [
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),
     path('post/<int:post_id>/delete/', views.post_delete, name='post_delete'),  # 게시글 삭제
     path('download/<path:file_path>/', views.download_file, name='download_file'), #파일 다운로드
+    
+    #자료실 url
+    path('file/', views.file_list, name='file_list'),
+    path('file/create/', views.file_create, name='file_create'),
+    path('file/<int:file_id>/', views.file_detail, name='file_detail'),
+    path('file/<int:file_id>/delete/', views.file_delete, name='file_delete'),
     
     #설문조사 결과 url
     #학교별 통계
