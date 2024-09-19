@@ -68,40 +68,44 @@ body {
 }
 
 .mainphotoView {
-    background-color: #e6f0fa; /* 배경색 설정 */
-    padding: 40px 0; /* 위, 아래 패딩 설정 */
-}
-
-.mainphoto {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    max-width: 1200px;
-    margin: 0 auto; /* 가운데 정렬 */
-    padding: 0 20px; /* 좌우 여백 추가 */
+    /*background: linear-gradient(135deg, #e6f0fa 0%, #beddfa 100%); /* 그라데이션 배경색 */
+    background-color: #d5ebfe;  /* 단색 배경 */
+    padding: 30px 0; /* 위아래 패딩 추가 */
+    text-align: center; /* 텍스트 가운데 정렬 */
 }
 
 .main_ph {
-    max-width: 60%;
+    max-width: 70%;
+    margin: 0 auto; /* 가운데 정렬 */
+    padding: 30px 0; /* 내부 여백 추가 */
 }
 
 .main_ph h1 {
-    font-size: 50px;
-    color: #005b99; /* 텍스트 색상 설정 */
+    font-size: 48px;
+    font-weight: 700; /* 더 굵은 글씨체 */
+    color: #003c7d; /* 더 진한 파란색 */
     margin-bottom: 20px;
+    letter-spacing: 1px; /* 글자 간격 추가 */
 }
 
 .main_ph h2 {
     font-size: 36px;
-    color: #6c98c5; /* 텍스트 색상 설정 */
-    margin-bottom: 20px;
+    color: #005b99; /* 기존 색상 유지 */
+    margin-bottom: 15px;
+    font-style: italic; /* 기울임 글씨체 추가 */
 }
 
 .main_ph h3 {
-    font-size: 20px;
+    font-size: 22px;
     color: #333;
-    line-height: 1.6em;
+    margin: 0 auto;
+    max-width: 800px; /* 글의 최대 너비 설정 */
+    line-height: 1.8em; /* 줄 간격 증가 */
+    padding-top: 20px;
+    padding-bottom: 50px;
+    border-top: 2px solid #005b99; /* 글 위에 선 추가 */
 }
+
 
 
 /*-------------------------------------------------------------------------*/
