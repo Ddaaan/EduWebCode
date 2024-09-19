@@ -111,8 +111,11 @@
         </form>
     </div>
     
-
-    <!-- 여기에 통계 결과가 표시됩니다 -->
+    <!-- 통계 결과가 표시될 부분 위에 로딩 메시지 추가 -->
+    <div id="loading-message" style="display:none; color: red; font-size: 18px;">
+        결과 합산 중입니다. 잠시만 기다려 주세요...
+    </div>
+    <!-- 통계 결과 표시 -->
     <div id="statistics-results"></div>
 </div>
 
@@ -173,6 +176,11 @@
             return; // 역할이 선택되지 않으면 함수 종료
         }
 
+        // 조회 버튼과 폼 요소를 비활성화하고 로딩 메시지를 표시
+        $('#loading-message').show(); // 로딩 메시지 표시
+        $('#statistics-form button').prop('disabled', true).css('cursor', 'not-allowed'); // 버튼 비활성화 및 마우스 비활성화
+        $('#statistics-form select').prop('disabled', true); // 선택 박스 비활성화
+
         $.ajax({
             url: url,
             method: 'POST',
@@ -183,6 +191,12 @@
             },
             error: function() {
                 $('#statistics-results').html('<p>통계 데이터를 불러오는 중 오류가 발생했습니다.</p>');
+            },
+            complete: function() {
+                // 완료 시 로딩 메시지를 숨기고, 버튼과 폼 요소 다시 활성화
+                $('#loading-message').hide(); // 로딩 메시지 숨기기
+                $('#statistics-form button').prop('disabled', false).css('cursor', 'pointer'); // 버튼 활성화 및 마우스 커서 복구
+                $('#statistics-form select').prop('disabled', false); // 선택 박스 활성화
             }
         });
     }
