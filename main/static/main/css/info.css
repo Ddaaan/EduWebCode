@@ -3,7 +3,7 @@ body {
 }
 
 .info-container {
-    width: 50%;
+    width: 55%;
     margin: 50px auto;
     padding: 20px;
     border: 2px solid #333;
@@ -12,23 +12,24 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.info-container h2 {
+.info-container h1 {
     text-align: center;
     margin-bottom: 20px;
 }
 
 label {
-    font-size: 18px;
+    font-size: 25px;
     margin-right: 10px;
 }
 
 select, input[type="text"] {
     width: calc(100% - 20px);
-    padding: 10px;
-    font-size: 16px;
+    padding: 12px;
+    font-size: 18px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 30px;
 }
 
 button {
@@ -37,7 +38,7 @@ button {
     padding: 10px;
     background-color: #4CAF50;
     color: white;
-    font-size: 16px;
+    font-size: 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
