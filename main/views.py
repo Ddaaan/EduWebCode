@@ -181,6 +181,34 @@ def admin_dashboard(request):
     messages.error(request, '권한이 없습니다. 다시 로그인 해주세요.')
     return redirect('admin_login')
 
+import zipfile
+from io import BytesIO
+
+def download_survey_data(request):
+    # 다운로드할 파일 목록
+    file_paths = [
+        "D:/Daeun/eduWeb/surveySite/main/surveydata/survey_result_student_each.xlsx",
+        "D:/Daeun/eduWeb/surveySite/main/surveydata/survey_result_parents_each.xlsx",
+        "D:/Daeun/eduWeb/surveySite/main/surveydata/survey_result_teacher_each.xlsx"
+    ]
+
+    # 메모리 내에서 zip 파일을 생성하기 위해 BytesIO 사용
+    zip_buffer = BytesIO()
+
+    # zip 파일 생성
+    with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+        for file_path in file_paths:
+            file_name = os.path.basename(file_path)  # 파일명 추출
+            zip_file.write(file_path, file_name)  # ZIP 파일에 추가
+
+    # 응답을 위한 ZIP 파일을 메모리로부터 가져오기
+    zip_buffer.seek(0)
+
+    # HTTP 응답으로 ZIP 파일 전송
+    response = HttpResponse(zip_buffer, content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename="survey_data.zip"'
+
+    return response
 
 # 로그아웃
 def admin_logout(request):
