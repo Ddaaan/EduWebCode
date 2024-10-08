@@ -395,6 +395,7 @@ def file_delete(request, file_id):
 
     return HttpResponseNotAllowed(['POST'], "이 작업은 POST 요청만 허용됩니다.")
 
+import datetime
 
 #설문 관련 함수
 #설문 응답 처리 함수
@@ -404,16 +405,19 @@ def handle_survey_response(request):
     
     if role == 'student':
         excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student.xlsx"
+        excel_file_path2 = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_student_each.xlsx"
         question_count = 22
         people_count_col = 27
     
     elif role == 'parents':
         excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_parents.xlsx"
+        excel_file_path2 = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_parents_each.xlsx"
         question_count = 23
         people_count_col = 28
         
     elif role == 'teacher':
         excel_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_teacher.xlsx"
+        excel_file_path2 = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\survey_result_teacher_each.xlsx"
         question_count = 25
         people_count_col = 30
         
@@ -426,6 +430,10 @@ def handle_survey_response(request):
 
         # 디버깅: 응답 값 출력
         print("선택한 응답 값들:", responses)
+        
+        #각각 결과 저장
+        each_wb = openpyxl.load_workbook(excel_file_path2, data_only=True)
+        each_ws = each_wb.active
 
         wb = openpyxl.load_workbook(excel_file_path, data_only=True)
         ws = wb.active
@@ -433,6 +441,7 @@ def handle_survey_response(request):
         school_id = request.POST.get('school_id')
         print(f"전달된 학교 ID: {school_id}")  # 디버깅: school_id가 제대로 전달되었는지 확인
         
+    ## 학교별 응답 저장 로직
         row_to_update = None
         # 학교 ID가 있는 열을 찾아서 해당 행을 가져옴
         for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=4, max_col=4):  # 4번째 열에 학교 ID가 있음
@@ -455,6 +464,29 @@ def handle_survey_response(request):
             wb.save(excel_file_path)
         else:
             print(f"학교 ID {school_id}를 찾을 수 없습니다.")  # 디버깅: 학교 ID가 없을 경우
+        
+    ## 개개인별 응답 저장 로직
+        last_row = each_ws.max_row+1
+        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        ip_address = get_client_ip(request)
+        
+        # 순번 매기기
+        try:
+            num = int(each_ws.cell(row=last_row - 1, column=1).value) or 0
+        except (TypeError, ValueError):
+            num = 0  # 숫자로 변환할 수 없는 경우 기본값 0
+                
+        print(f"no : {num}, timestamp : {timestamp}, ip : {ip_address}, id : {school_id}") #디버깅
+        
+        each_ws.cell(row=last_row, column=1).value = num + 1
+        each_ws.cell(row=last_row, column=2).value = timestamp
+        each_ws.cell(row=last_row, column=3).value = ip_address
+        each_ws.cell(row=last_row, column=4).value = school_id
+        
+        for i, response in enumerate(responses, start=5):
+            each_ws.cell(row=last_row, column=i).value = response
+            
+        each_wb.save(excel_file_path2)
 
     return redirect('survey_complete')
 
