@@ -460,10 +460,10 @@ def handle_survey_response(request):
         print("선택한 응답 값들:", responses)
         
         #각각 결과 저장
-        each_wb = openpyxl.load_workbook(excel_file_path2, data_only=True)
+        each_wb = openpyxl.load_workbook(excel_file_path2, data_only=False)
         each_ws = each_wb.active
 
-        wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+        wb = openpyxl.load_workbook(excel_file_path, data_only=False)
         ws = wb.active
         
         school_id = request.POST.get('school_id')
@@ -490,6 +490,7 @@ def handle_survey_response(request):
             
             # 엑셀 파일 저장
             wb.save(excel_file_path)
+            wb.close()
         else:
             print(f"학교 ID {school_id}를 찾을 수 없습니다.")  # 디버깅: 학교 ID가 없을 경우
         
@@ -515,6 +516,7 @@ def handle_survey_response(request):
             each_ws.cell(row=last_row, column=i).value = response
             
         each_wb.save(excel_file_path2)
+        each_wb.close()
 
     return redirect('survey_complete')
 
