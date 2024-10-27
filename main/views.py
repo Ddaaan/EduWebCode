@@ -430,6 +430,8 @@ def file_delete(request, file_id):
 
 import datetime
 
+file_lock = threading.Lock()
+
 #큐 저장 함수
 def process_queue():
     while True:
@@ -454,74 +456,85 @@ def process_queue():
             question_count = 25
             people_count_col = 30
         
-        # 엑셀 파일 열기 및 응답 저장
+        # 응답을 텍스트 파일에 저장
         try:
-            print("엑셀 파일 열기 시도...")
-            wb = openpyxl.load_workbook(excel_file_path, data_only=True)
-            ws = wb.active
-            print("엑셀 파일 활성화")
-
-            # 학교별 응답 저장
-            row_to_update = None
-            for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=4, max_col=4):
-                print(f"현재 행 값: {row[0].value}")  # 디버깅을 위한 로그
-                if str(row[0].value).strip() == str(school_id).strip():
-                    row_to_update = row[0].row
-                    break
-
-            if row_to_update:
-                print(f"업데이트할 행 번호: {row_to_update}")
-                for i, response in enumerate(responses, start=5):
-                    current_value = ws.cell(row=row_to_update, column=i).value or 0
-                    ws.cell(row=row_to_update, column=i).value = current_value + response
-
-                current_value = ws.cell(row=row_to_update, column=people_count_col).value or 0
-                ws.cell(row=row_to_update, column=people_count_col).value = current_value + 1
-                wb.save(excel_file_path)
-            
-            else:
-                print(f"학교 ID {school_id}에 해당하는 행을 찾을 수 없습니다.")
-            
-            wb.close()
-            
+            txt_file_path = "D:\\Daeun\\eduWeb\\surveySite\\main\\surveydata\\responses_log.txt"
+            with open(txt_file_path, "a", encoding="utf-8") as txt_file:
+                timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                txt_file.write(f"{role}    {timestamp}    {school_id}    {ip_address}   {responses}\n")
         except Exception as e:
-            print(f"엑셀 처리 중 오류 발생 (학교별 응답 저장): {e}")
+            print(f"텍스트 파일에 저장 중 오류 발생: {e}")
         
-        try:
-            # 개개인별 응답 저장
-            print("개개인별 응답 저장 시작...")
-            each_wb = openpyxl.load_workbook(excel_file_path2, data_only=True)
-            each_ws = each_wb.active
-            print("개개인별 엑셀 파일 활성화")
-            
-            last_row = each_ws.max_row+1
-            timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            
-            # 순번 매기기
+        with file_lock:
+            # 엑셀 파일 열기 및 응답 저장
             try:
-                num = int(each_ws.cell(row=last_row - 1, column=1).value) or 0
-            except (TypeError, ValueError):
-                num = 0  # 숫자로 변환할 수 없는 경우 기본값 0
+                print("엑셀 파일 열기 시도...")
+                wb = openpyxl.load_workbook(excel_file_path, data_only=True)
+                ws = wb.active
+                print("엑셀 파일 활성화")
+
+                # 학교별 응답 저장
+                row_to_update = None
+                for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=4, max_col=4):
+                    if str(row[0].value).strip() == str(school_id).strip():
+                        row_to_update = row[0].row
+                        break
+
+                if row_to_update:
+                    for i, response in enumerate(responses, start=5):
+                        current_value = ws.cell(row=row_to_update, column=i).value or 0
+                        ws.cell(row=row_to_update, column=i).value = current_value + response
+
+                    current_value = ws.cell(row=row_to_update, column=people_count_col).value or 0
+                    ws.cell(row=row_to_update, column=people_count_col).value = current_value + 1
+                    wb.save(excel_file_path)
                 
-            #print(f"no : {num + 1}, timestamp : {timestamp}, ip : {ip_address}, id : {school_id}") #디버깅
+                else:
+                    print(f"학교 ID {school_id}에 해당하는 행을 찾을 수 없습니다.")
+                
+                wb.close()
+                
+                print(f"학교 ID {school_id}에 저장 완료")
+                
+            except Exception as e:
+                print(f"엑셀 처리 중 오류 발생 (학교별 응답 저장): {e}")
+            
+            try:
+                # 개개인별 응답 저장
+                print("개개인별 응답 저장 시작...")
+                each_wb = openpyxl.load_workbook(excel_file_path2, data_only=True)
+                each_ws = each_wb.active
+                print("개개인별 엑셀 파일 활성화")
+                
+                last_row = each_ws.max_row+1
+                timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                
+                # 순번 매기기
+                try:
+                    num = int(each_ws.cell(row=last_row - 1, column=1).value) or 0
+                except (TypeError, ValueError):
+                    num = 0  # 숫자로 변환할 수 없는 경우 기본값 0
+                    
+                #print(f"no : {num + 1}, timestamp : {timestamp}, ip : {ip_address}, id : {school_id}") #디버깅
 
-            each_ws.cell(row=last_row, column=1).value = num + 1
-            each_ws.cell(row=last_row, column=2).value = timestamp
-            each_ws.cell(row=last_row, column=3).value = ip_address
-            each_ws.cell(row=last_row, column=4).value = school_id
+                each_ws.cell(row=last_row, column=1).value = num + 1
+                each_ws.cell(row=last_row, column=2).value = timestamp
+                each_ws.cell(row=last_row, column=3).value = ip_address
+                each_ws.cell(row=last_row, column=4).value = school_id
 
-            for i, response in enumerate(responses, start=5):
-                each_ws.cell(row=last_row, column=i).value = response
+                for i, response in enumerate(responses, start=5):
+                    each_ws.cell(row=last_row, column=i).value = response
 
-            each_wb.save(excel_file_path2)
-            each_wb.close()
+                each_wb.save(excel_file_path2)
+                each_wb.close()
 
-        except Exception as e:
-            print(f"엑셀 처리 중 오류 발생 (개개인별 응답 저장): {e}")
+                print(f"no: {num+1}, role: { role}, time: {timestamp}, id: {school_id}, ip: {ip_address} 저장이 완료되었습니다.")
+                
+            except Exception as e:
+                print(f"엑셀 처리 중 오류 발생 (개개인별 응답 저장): {e}")
 
-        finally:
-            response_queue.task_done()  # 작업 완료 처리
-            print(f"no: {num+1}, role: { role}, time: {timestamp}, id: {school_id}, ip: {ip_address} 저장이 완료되었습니다.")
+            finally:
+                response_queue.task_done()  # 작업 완료 처리
 
 # 백그라운드 스레드 시작
 threading.Thread(target=process_queue, daemon=True).start()
