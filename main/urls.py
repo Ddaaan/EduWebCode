@@ -11,6 +11,7 @@ urlpatterns = [
     
     #관리자 로그인 url
     path('admin-login/', views.admin_login, name='admin_login'), #로그인 페이지
+    path('changepw/pawd/', views.change_password, name='change_password'), #비밀번호 수정
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),  # 관리자 대시보드
     path('download/dukekdnsfhem52/', views.download_survey_data, name='download_survey_data'), #통계파일 다운로드
     path('admin-logout/', views.admin_logout, name='admin_logout'),  # 로그아웃

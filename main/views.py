@@ -109,6 +109,63 @@ def statistics_admin_total_page(request):
     # GET 요청일 때 지역 데이터만 템플릿으로 전달
     return render(request, 'statistics_admin_total_page.html', {'regions': regions, 'role': role})
 
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password, check_password
+from .forms import PasswordChangeForm
+from .models import School
+
+from django.contrib.auth import authenticate, login, logout
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.POST)
+        if form.is_valid():
+            old_password = form.cleaned_data.get('old_password')
+            new_password = form.cleaned_data.get('new_password')
+            confirm_password = form.cleaned_data.get('confirm_password')
+
+            # 현재 로그인된 학교의 ID를 세션에서 가져옴
+            school_id = request.session.get('school_id')
+
+            try:
+                school = School.objects.get(school_id=school_id)
+                if check_password(old_password, school.school_pw):
+                    if new_password == confirm_password:
+                        # 새로운 비밀번호 해쉬화 후 업데이트
+                        school.school_pw = make_password(new_password)
+                        school.save()
+
+                        # Django User 모델 비밀번호 갱신
+                        user = request.user
+                        user.set_password(new_password)
+                        user.save()
+
+                        # 사용자 로그아웃
+                        logout(request)
+                        
+                        # 로그아웃 후 로그인 페이지로 리다이렉트
+                        messages.success(request, '비밀번호가 성공적으로 변경되었습니다. 다시 로그인 해주세요.')
+                        return redirect('admin_login')
+                    
+                    else:
+                        form.add_error('confirm_password', '새 비밀번호가 일치하지 않습니다.')
+                else:
+                    form.add_error('old_password', '현재 비밀번호가 일치하지 않습니다.')
+            except School.DoesNotExist:
+                form.add_error(None, '사용자를 찾을 수 없습니다.')
+    else:
+        form = PasswordChangeForm()
+
+    return render(request, 'change_password.html', {'form': form})
+
+
+
+
 # 관리자 로그인
 def admin_login(request):
     # 이미 로그인이 되어있는지 세션을 확인
@@ -146,9 +203,15 @@ def admin_login(request):
                         login(request, user)  # Django의 인증 시스템 사용
                     else:
                         # 유저가 없을 경우 Django User 객체를 만들고 로그인 처리
-                        new_user = User.objects.create_user(username=school.school_id, password=school_pw)
-                        new_user.save()
-                        login(request, new_user)
+                        # 수정: 기존 유저가 있는지 확인하고 없으면 생성하도록 수정
+                        user, created = User.objects.get_or_create(username=school.school_id)
+                        if created:
+                            user.set_password(school_pw)  # 비밀번호 설정
+                            user.save()
+                        # 비밀번호 설정 후 인증 및 로그인
+                        user = authenticate(request, username=school.school_id, password=school_pw)
+                        if user:
+                            login(request, user)
                     
                     return redirect ('admin_dashboard') # --> 로그인 완료 후 이동할 페이지
                 
