@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d9*g)fgxmaml+ta(gc0rxn)s92t)6kt0!2-=zfc9iw9kkc1mqa'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -81,11 +81,11 @@ WSGI_APPLICATION = 'surveySite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'eduweb_database',
-        'USER' : 'daaaan',
-        'PASSWORD' : '1234', # 설정한 비밀번호로 적어주면 된다.
-        'HOST' : '127.0.0.1',
-        'PORT' : '3306',
+        'NAME': 'database',
+        'USER' : 'user',
+        'PASSWORD' : '', # 설정한 비밀번호로 적어주면 된다.
+        'HOST' : 'ip',
+        'PORT' : '',
     }
 }
 

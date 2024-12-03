@@ -46,7 +46,7 @@
         <ul class="main_class">
             <li class="m1">
                 <!-- /////////////////////////////// 학생 /////////////////////////////// -->
-                    <a href="/jns/select-info?role=student">
+                <a href="#" onclick="showSurveyClosedAlert(); return false;">
                         <p>학생</p>
                         <p>우리학교 학교민주주의 지수<br />설문조사 시작하기</p>
                     </a>
@@ -54,7 +54,7 @@
             </li>
             <li class="m2">
                 <!-- /////////////////////////////// 학부모 /////////////////////////////// -->
-                <a href="/jns/select-info?role=parent">
+                <a href="#" onclick="showSurveyClosedAlert(); return false;">
                         <p>학부모</p>
                         <p>우리학교 학교민주주의 지수<br />설문조사 시작하기</p>
                     </a>
@@ -62,7 +62,7 @@
             </li>
             <li class="m3">
                 <!-- /////////////////////////////// 교원 /////////////////////////////// -->
-                    <a href="/jns/select-info?role=teacher">
+                <a href="#" onclick="showSurveyClosedAlert(); return false;">
                         <p>교원</p>
                         <p>우리학교 학교민주주의 지수<br />설문조사 시작하기</p>
                     </a>
@@ -72,6 +72,11 @@
         </ul>
     </section>
 
+    <script>
+        function showSurveyClosedAlert() {
+            alert("설문조사 기간이 종료되었습니다.");
+        }
+    </script>
 
     <footer id="footer">
         <section class="footer">
