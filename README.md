@@ -61,3 +61,7 @@
 
 
 - 설문조사 결과 통계 보기 : 관리자가 선택한 조건에 해당하는 결과값들을 엑셀파일에서 찾아 통계화시키는 형식
+
+
+## 📌배운점
+🔗 [Link to Notion](https://sneaky-viscose-116.notion.site/12184dccb3788007a936ed1918ffab09?pvs=4)
