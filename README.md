@@ -22,42 +22,42 @@
 
   
 ## 📌개발환경
-Language : Python 3.11.9
+- Language : Python 3.11.9
 
 
-Framework : Django
+- Framework : Django
 
 
-Database : MySQL
+- Database : MySQL
 
 
-Server : Ubuntu + Nginx
+- Server : Ubuntu + Nginx
 
 
 ## 📌파일구조
-**/main/templates/~.html** : Frontend HTML templates
+- **/main/templates/~.html** : Frontend HTML templates
 
 
-**/main/static/main/css** : CSS styles
+- **/main/static/main/css** : CSS styles
 
 
-**/main/static/main/js** : JavaScript logic
+- **/main/static/main/js** : JavaScript logic
 
 
-**/main/views.py** : Backend logic (Python)
+- **/main/views.py** : Backend logic (Python)
 
 
-**/main/urls.py** : URL configuration
+- **/main/urls.py** : URL configuration
 
 
-**/main/models.py** : Database Architecture
+- **/main/models.py** : Database Architecture
 
 
 ## 📌간단한 로직설명
-설문조사 결과 저장 : 설문조사를 완료하면 엑셀파일에 결과값이 저장되는 형식 (개개인별 응답 모두 저장 / 학교별 응답 합산 저장)
+- 설문조사 결과 저장 : 설문조사를 완료하면 엑셀파일에 결과값이 저장되는 형식 (개개인별 응답 모두 저장 / 학교별 응답 합산 저장)
 
 
-설문조사 결과파일 다운로드 : 관리자가 파일을 다운로드하면 학생, 학부모, 교직원의 응답 파일이 ZIP 파일 형태로 다운로드
+- 설문조사 결과파일 다운로드 : 관리자가 파일을 다운로드하면 학생, 학부모, 교직원의 응답 파일이 ZIP 파일 형태로 다운로드
 
 
-설문조사 결과 통계 보기 : 관리자가 선택한 조건에 해당하는 결과값들을 엑셀파일에서 찾아 통계화시키는 형식
+- 설문조사 결과 통계 보기 : 관리자가 선택한 조건에 해당하는 결과값들을 엑셀파일에서 찾아 통계화시키는 형식
