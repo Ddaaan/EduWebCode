@@ -35,25 +35,25 @@ Server : Ubuntu + Nginx
 
 
 ## 📌파일구조
-/main/templates/~.html : Frontend HTML templates
+**/main/templates/~.html** : Frontend HTML templates
 
 
-/main/static/main/css : CSS styles
+**/main/static/main/css** : CSS styles
 
 
-/main/static/main/js : JavaScript logic
+**/main/static/main/js** : JavaScript logic
 
 
-/main/views.py : Backend logic (Python)
+**/main/views.py** : Backend logic (Python)
 
 
-/main/urls.py : URL configuration
+**/main/urls.py** : URL configuration
 
 
-/main/models.py : Database Architecture
+**/main/models.py** : Database Architecture
 
 
-## 📌로직설명
+## 📌간단한 로직설명
 설문조사 결과 저장 : 설문조사를 완료하면 엑셀파일에 결과값이 저장되는 형식 (개개인별 응답 모두 저장 / 학교별 응답 합산 저장)
 
 
